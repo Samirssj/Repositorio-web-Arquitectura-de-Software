@@ -27,7 +27,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 RUN mkdir -p /usr/local/tomcat/webapps/uploads
 
 # Copiar el WAR generado por Maven
-COPY --from=build /app/target/MiPortafolio.war /usr/local/tomcat/webapps/MiPortafolio.war
+COPY --from=build /app/target/MiPortafolio.war /usr/local/tomcat/webapps/ROOT.war
 
 # Puerto utilizado por Tomcat
 EXPOSE 8080
