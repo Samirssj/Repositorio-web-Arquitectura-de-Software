@@ -11,8 +11,8 @@ Se configuró el entorno de desarrollo local para el proyecto MiPortafolio (Java
 
 ### ✅ Estado: ACTIVO Y EJECUTÁNDOSE
 - **URL de acceso**: http://localhost:8080/MiPortafolio/
-- **Servidor**: Tomcat 10.1.59 ejecutándose en puerto 8080
-- **Estado del WAR**: Desplegado en `apache-tomcat-10.1.59/webapps/MiPortafolio.war`
+- **Servidor**: Tomcat 11.0.25 ejecutándose en puerto 8080
+- **Estado del WAR**: Desplegado en `apache-tomcat-11.0.25/webapps/MiPortafolio.war`
 
 ---
 
@@ -63,7 +63,7 @@ Se configuró el entorno de desarrollo local para el proyecto MiPortafolio (Java
 
 ### 3. Java 25 (Eclipse Temurin)
 - **Versión**: 25.0.2
-- **Ubicación**: `C:\Users\ACER\.jdk\jdk-25\jdk-25.0.2`
+- **Ubicación**: `C:\Users\ACER\.jdk\jdk-25.0.2`
 - **Método de instalación**: winget
 - **Paquete**: JDK 25 instalado para la actualización del runtime
 
@@ -73,11 +73,11 @@ Se configuró el entorno de desarrollo local para el proyecto MiPortafolio (Java
 - **Método de instalación**: Descarga manual desde Apache Maven
 - **URL de descarga**: https://dlcdn.apache.org/maven/maven-3/3.9.16/binaries/apache-maven-3.9.16-bin.zip
 
-### 5. Tomcat 10.1.59
-- **Versión**: 10.1.59
-- **Ubicación**: `C:\Users\ACER\Documents\MiPortafolio\apache-tomcat-10.1.59`
+### 5. Tomcat 11.0.25
+- **Versión**: 11.0.25
+- **Ubicación**: `C:\Users\ACER\Documents\apache-tomcat-11.0.25`
 - **Método de instalación**: Descarga manual desde Apache Tomcat
-- **URL de descarga**: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.59/bin/apache-tomcat-10.1.59-windows-x64.zip
+- **URL de descarga**: https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.25/bin/apache-tomcat-11.0.25-windows-x64.zip
 - **Puerto**: 8080
 
 ---
@@ -94,15 +94,15 @@ mvn clean package
 
 ### 7. Despliegue en Tomcat
 ```bash
-Copy-Item "target\MiPortafolio.war" "apache-tomcat-10.1.59\webapps\"
+Copy-Item "target\MiPortafolio.war" "apache-tomcat-11.0.25\webapps\"
 ```
 - **Resultado**: WAR copiado exitosamente
-- **Ubicación**: `apache-tomcat-10.1.59\webapps\MiPortafolio.war`
+- **Ubicación**: `apache-tomcat-11.0.25\webapps\MiPortafolio.war`
 
 ### 8. Inicio de Tomcat
 ```bash
-$env:CATALINA_HOME = "$PWD\apache-tomcat-10.1.59"
-$env:JAVA_HOME = "C:\Users\ACER\.jdk\jdk-25\jdk-25.0.2"
+$env:CATALINA_HOME = "$PWD\apache-tomcat-11.0.25"
+$env:JAVA_HOME = "C:\Users\ACER\.jdk\jdk-25.0.2"
 & "$env:CATALINA_HOME\bin\startup.bat"
 ```
 - **Resultado**: Tomcat iniciado correctamente
@@ -140,7 +140,7 @@ MiPortafolio/
 ├── target/
 │   └── MiPortafolio.war (generado)
 ├── apache-maven-3.9.16/ (instalado)
-├── apache-tomcat-10.1.59/ (instalado)
+├── apache-tomcat-11.0.25/ (instalado)
 ├── maven.zip (descargado)
 └── tomcat.zip (descargado)
 ```
@@ -151,7 +151,7 @@ MiPortafolio/
 
 ### Variables de Entorno (Sesión Actual)
 - `JAVA_HOME`: `C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot`
-- `CATALINA_HOME`: `C:\Users\ACER\Documents\MiPortafolio\apache-tomcat-10.1.59`
+- `CATALINA_HOME`: `C:\Users\ACER\Documents\apache-tomcat-11.0.25`
 - `MAVEN_HOME`: `C:\Users\ACER\Documents\MiPortafolio\apache-maven-3.9.16`
 
 ### Configuración de Base de Datos
@@ -178,7 +178,7 @@ mvn clean package
 ### Para Iniciar Tomcat
 ```bash
 cd c:\Users\ACER\Documents\MiPortafolio
-$env:CATALINA_HOME = "$PWD\apache-tomcat-10.1.59"
+$env:CATALINA_HOME = "C:\Users\ACER\Documents\apache-tomcat-11.0.25"
 $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
 & "$env:CATALINA_HOME\bin\startup.bat"
 ```
@@ -186,7 +186,7 @@ $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
 ### Para Detener Tomcat
 ```bash
 cd c:\Users\ACER\Documents\MiPortafolio
-$env:CATALINA_HOME = "$PWD\apache-tomcat-10.1.59"
+$env:CATALINA_HOME = "C:\Users\ACER\Documents\apache-tomcat-11.0.25"
 $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
 & "$env:CATALINA_HOME\bin\shutdown.bat"
 ```
@@ -196,7 +196,7 @@ $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
 # 1. Compilar
 mvn clean package
 # 2. Copiar WAR
-Copy-Item "target\MiPortafolio.war" "apache-tomcat-10.1.59\webapps\" -Force
+Copy-Item "target\MiPortafolio.war" "C:\Users\ACER\Documents\apache-tomcat-11.0.25\webapps\" -Force
 # 3. Tomcat detectará automáticamente el cambio y recargará
 ```
 
@@ -255,8 +255,8 @@ Copy-Item "target\MiPortafolio.war" "apache-tomcat-10.1.59\webapps\" -Force
 ## Contacto y Soporte
 
 Para problemas o preguntas, revisar:
-- Logs de Tomcat: `apache-tomcat-10.1.59/logs/catalina.out`
-- Logs de aplicación: `apache-tomcat-10.1.59/logs/localhost.YYYY-MM-DD.log`
+- Logs de Tomcat: `C:\Users\ACER\Documents\apache-tomcat-11.0.25/logs/catalina.out`
+- Logs de aplicación: `C:\Users\ACER\Documents\apache-tomcat-11.0.25/logs/localhost.YYYY-MM-DD.log`
 - Documentación del proyecto: `README.md`
 
 ---
