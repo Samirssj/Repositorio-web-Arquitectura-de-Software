@@ -19,20 +19,29 @@ RUN mvn clean package -DskipTests
 
 FROM tomcat:10.1-jdk17
 
-# Eliminar aplicaciones predeterminadas
+# Eliminar aplicaciones predeterminadas de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Directorio para uploads
 RUN mkdir -p /usr/local/tomcat/webapps/uploads
 
-# Copiar WAR
-COPY --from=build /app/target/MiPortafolio.war /usr/local/tomcat/webapps/MiPortafolio.war
+# ============================================================
+# IMPORTANTE:
+# ROOT.war hace que la aplicación responda directamente en /
+# ============================================================
 
-# Crear script de inicio
+COPY --from=build /app/target/MiPortafolio.war /usr/local/tomcat/webapps/ROOT.war
+
+# ============================================================
+# SCRIPT DE INICIO
+# ============================================================
+
 RUN printf '#!/bin/sh\n\
 PORT=${PORT:-8080}\n\
+echo "Iniciando Tomcat en puerto ${PORT}"\n\
 sed -i "s/port=\"8080\"/port=\"${PORT}\"/" /usr/local/tomcat/conf/server.xml\n\
-exec catalina.sh run\n' > /usr/local/tomcat/start-vercel.sh \
+exec catalina.sh run\n\
+' > /usr/local/tomcat/start-vercel.sh \
 && chmod +x /usr/local/tomcat/start-vercel.sh
 
 EXPOSE 8080
