@@ -1,24 +1,113 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Acerca de mí | Academia</title><link rel="stylesheet" href="css/style.css"></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de mí | Academia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("academia-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+</head>
 <body>
-<header class="topbar"><div class="container topbar-inner">
-<a class="brand" href="${pageContext.request.contextPath}/"><span class="brand-mark">A</span> ACADEMIA</a>
-<nav class="main-nav"><a href="${pageContext.request.contextPath}/">Inicio</a><a href="unidades.jsp">Unidades</a><a class="active" href="acerca.jsp">Acerca de mí</a></nav>
-<div class="user-area"><div class="user-copy"><strong>Mi Portafolio</strong><span>Perfil académico</span></div><button class="theme-toggle" data-theme-toggle><span class="moon">☾</span><span class="sun">☀</span></button><span class="avatar">A</span></div>
-</div></header>
-<main class="container page">
-<div class="page-heading"><span class="eyebrow">Perfil académico</span><h1>Acerca de mí</h1><p>Una breve presentación de la persona detrás de este portafolio.</p></div>
-<section class="about-grid">
-<article class="card about-card"><div class="profile"><div class="profile-avatar">S</div><div><h2>Samir</h2><span>Estudiante · Ingeniería de Sistemas y Computación</span></div></div>
-<p>Este portafolio reúne mis trabajos, proyectos, materiales y evidencias de aprendizaje en un solo espacio.</p>
-<p>Mi objetivo es seguir fortaleciendo mis conocimientos en desarrollo web, bases de datos, redes, algoritmos y diseño de interfaces.</p>
-<a class="btn btn-primary" href="${pageContext.request.contextPath}/">Ver mis proyectos</a></article>
-<aside class="card about-card"><span class="eyebrow">Lo que estoy aprendiendo</span><h2 style="font-size:13px;margin:7px 0">Herramientas y habilidades</h2>
-<ul class="skills"><li>Java y Jakarta EE</li><li>HTML y CSS</li><li>PostgreSQL</li><li>Supabase</li><li>Algoritmos</li><li>Git y Maven</li><li>Redes y Packet Tracer</li><li>UI/UX</li></ul></aside>
-</section>
+
+<header class="site-header">
+    <nav class="site-nav">
+        <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+            <span class="brand-mark">&lt;/&gt;</span>
+            <span>ACADEMIA</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
+            <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a class="active" href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button type="button" id="themeToggle" class="theme-toggle">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-label">Tema</span>
+            </button>
+            <a href="login.jsp" class="btn btn-primary" style="font-size: 12px; min-height: 34px;">Administrar</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page-shell">
+    <div style="margin-bottom: 24px;">
+        <span class="section-label">PERFIL ACADÉMICO</span>
+        <h1 style="font-size: 32px; font-weight: 800; margin-top: 4px;">Aprender haciendo.</h1>
+        <p style="color: var(--muted); font-size: 14px; margin-top: 6px;">
+            Este portafolio reúne mis proyectos, recursos y avances mientras desarrollo mis habilidades técnicas.
+        </p>
+    </div>
+
+    <div class="about-layout">
+        <article class="content-panel">
+            <div class="profile-block">
+                <div class="profile-avatar">S</div>
+                <div>
+                    <h2 style="font-size: 20px; font-weight: 800;">Samir Rojas</h2>
+                    <span style="color: var(--blue); font-size: 12px; font-weight: 700;">Estudiante · Ingeniería de Sistemas</span>
+                </div>
+            </div>
+
+            <p style="color: var(--muted); line-height: 1.7; font-size: 14px;">
+                Mi objetivo es seguir fortaleciendo mis conocimientos en desarrollo web, bases de datos, redes, algoritmos y diseño de interfaces.
+            </p>
+
+            <div style="margin-top: 24px;">
+                <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-primary">Ver mis proyectos</a>
+            </div>
+        </article>
+
+        <aside class="content-panel">
+            <span class="section-label">LO QUE ESTOY APRENDIENDO</span>
+            <h3 style="font-size: 18px; font-weight: 800; margin-top: 6px; margin-bottom: 16px;">Herramientas y habilidades</h3>
+            
+            <ul class="skill-list">
+                <li>Java y Jakarta EE</li>
+                <li>HTML y CSS</li>
+                <li>PostgreSQL</li>
+                <li>Supabase</li>
+                <li>Algoritmos</li>
+                <li>Git y Maven</li>
+                <li>Redes y Packet Tracer</li>
+                <li>UI/UX</li>
+            </ul>
+        </aside>
+    </div>
 </main>
-<footer class="footer"><div class="container footer-inner"><div><div class="brand"><span class="brand-mark">A</span> ACADEMIA</div><p>Aprender haciendo.</p></div><div class="footer-links"><span>Inicio</span><span>Unidades</span><span>Proyectos</span><span>Perfil</span></div></div></footer>
-<script src="js/theme.js"></script>
-</body></html>
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="footer-brand">
+            <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+                <span class="brand-mark">&lt;/&gt;</span>
+                <span>ACADEMIA</span>
+            </a>
+            <p style="margin-top: 8px;">Aprender haciendo.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Navegación</h4>
+            <a href="${pageContext.request.contextPath}/index.jsp">Inicio</a>
+            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a>
+            <a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a>
+        </div>
+        <div class="footer-column">
+            <h4>Gestión</h4>
+            <a href="${pageContext.request.contextPath}/login.jsp">Iniciar sesión</a>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp">Administración</a>
+        </div>
+    </div>
+</footer>
+
+<script src="${pageContext.request.contextPath}/js/theme.js"></script>
+</body>
+</html>

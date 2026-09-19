@@ -1,17 +1,57 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Iniciar sesión | Academia</title><link rel="stylesheet" href="css/style.css"></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Academia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("academia-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+</head>
 <body>
-<div class="auth-page"><div class="auth-toolbar"><button class="theme-toggle" data-theme-toggle><span class="moon">☾</span><span class="sun">☀</span></button></div>
-<div class="auth-card"><a class="auth-brand" href="${pageContext.request.contextPath}/"><span class="brand-mark">A</span> ACADEMIA</a>
-<h1>Iniciar sesión</h1><p class="intro">Accede a tu espacio para gestionar tu portafolio y recursos académicos.</p>
-<% if (request.getAttribute("error") != null) { %><div class="alert alert-error"><%= request.getAttribute("error") %></div><% } %>
-<% if ("exitoso".equals(request.getParameter("registro"))) { %><div class="alert alert-success">Registro exitoso. Ahora puedes iniciar sesión.</div><% } %>
-<form action="login" method="post">
-<div class="form-group"><label for="email">Correo electrónico</label><input class="form-control" type="email" id="email" name="email" placeholder="correo@ejemplo.com" required></div>
-<div class="form-group"><label for="password">Contraseña</label><input class="form-control" type="password" id="password" name="password" placeholder="••••••••" required></div>
-<button class="btn btn-primary" type="submit">Iniciar sesión</button>
-</form>
-<p class="auth-links">¿No tienes una cuenta? <a href="registro.jsp">Crear cuenta</a></p><p class="auth-links"><a href="${pageContext.request.contextPath}/">← Volver al inicio</a></p>
-</div></div><script src="js/theme.js"></script></body></html>
+
+<div class="auth-page">
+    <div class="login-box">
+        <div class="auth-brand">&lt;/&gt; ACADEMIA ADMIN</div>
+        <h1>Iniciar sesión</h1>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">
+            Accede a tu espacio para gestionar tu portafolio y recursos académicos.
+        </p>
+
+        <% if (request.getAttribute("error") != null) { %>
+            <div style="background: rgba(239, 113, 128, 0.15); border: 1px solid #ef7180; color: #ef7180; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px;">
+                <%= request.getAttribute("error") %>
+            </div>
+        <% } %>
+
+        <form action="LoginServlet" method="POST">
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; min-height: 42px;">
+                Iniciar sesión
+            </button>
+        </form>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="index.jsp" style="color: var(--blue); font-size: 12px; font-weight: 700;">← Volver al inicio</a>
+        </div>
+    </div>
+</div>
+
+<script src="${pageContext.request.contextPath}/js/theme.js"></script>
+</body>
+</html>

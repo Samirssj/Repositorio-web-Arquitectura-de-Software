@@ -1,29 +1,109 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Semana 1 | Academia</title><link rel="stylesheet" href="css/style.css"></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos de la Semana | Academia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("academia-theme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+</head>
 <body>
-<header class="topbar"><div class="container topbar-inner">
-<a class="brand" href="${pageContext.request.contextPath}/"><span class="brand-mark">A</span> ACADEMIA</a>
-<nav class="main-nav"><a href="${pageContext.request.contextPath}/">Inicio</a><a class="active" href="unidades.jsp">Unidades</a><a href="acerca.jsp">Acerca de mí</a></nav>
-<div class="user-area"><div class="user-copy"><strong>Mi Portafolio</strong><span>Semana 1</span></div><button class="theme-toggle" data-theme-toggle><span class="moon">☾</span><span class="sun">☀</span></button><span class="avatar">A</span></div>
-</div></header>
-<main class="container page">
-<div class="page-heading"><span class="eyebrow">Unidad 1 · Semana 1</span><h1>Semana 1: Introducción a Algoritmos</h1><p>Material de clase y contenido de aprendizaje de la semana.</p></div>
-<div class="material-layout">
-<aside class="card material-list">
-<div class="eyebrow" style="padding:8px">Materiales de clase</div>
-<div class="material-item active"><span class="file-icon">PDF</span><span>Conceptos_Algoritmos.pdf</span></div>
-<div class="material-item"><span class="file-icon">PDF</span><span>Fundamentos_Notacion.pdf</span></div>
-<div class="material-item"><span class="file-icon">DOC</span><span>Guia_Ejercicios.docx</span></div>
-<div class="material-item"><span class="file-icon">PDF</span><span>Ejemplos_Resolucion.pdf</span></div>
-</aside>
-<section class="card lesson-card">
-<div class="lesson-head"><div><h2>TEMA 1.1: NOTACIÓN ASINTÓTICA Y COMPLEJIDAD</h2><p>Semana 1 · Fundamentos de algoritmia</p></div><span class="badge badge-blue">En curso</span></div>
-<div class="lesson-body"><h3>Introducción</h3><p>La complejidad de un algoritmo permite determinar de forma aproximada el crecimiento de los recursos necesarios cuando aumenta el tamaño de la entrada.</p><p>Para comparar soluciones se utilizan notaciones asintóticas como <strong>O grande</strong>, que describe una cota superior del crecimiento.</p><div class="callout"><strong>Concepto clave:</strong> la complejidad temporal analiza cómo aumenta el tiempo de ejecución en función del tamaño de los datos.</div><p>Ejemplo de representación:</p><div class="code-line">T(n) = 3n² + 2n + 1&nbsp;&nbsp; → &nbsp;&nbsp;O(n²)</div></div>
-</section>
-</div>
+
+<header class="site-header">
+    <nav class="site-nav">
+        <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+            <span class="brand-mark">A</span>
+            <span>ACADEMIA</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
+            <li><a class="active" href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button type="button" id="themeToggle" class="theme-toggle">
+                <span class="theme-icon">☾</span>
+                <span class="theme-label">Modo oscuro</span>
+            </button>
+            <div class="avatar">S</div>
+        </div>
+    </nav>
+</header>
+
+<main class="page-shell">
+    <div style="margin-bottom: 24px;">
+        <span class="section-label">UNIDAD 1 · SEMANA 01</span>
+        <h1 class="page-title">Introducción a Algoritmos</h1>
+    </div>
+
+    <!-- LAYOUT DEL LECTOR DE RECURSOS (2 COLUMNAS) -->
+    <div class="unit-detail-layout">
+        <!-- Panel Izquierdo: Lista de Materiales -->
+        <aside class="sidebar-weeks">
+            <h4>Materiales Disponibles</h4>
+            <ul class="week-menu">
+                <li><a href="#" class="active">📄 Guía de Laboratorio 01.pdf</a></li>
+                <li><a href="#">📊 Diapositivas - Lógica.pdf</a></li>
+                <li><a href="#">📝 Ejercicios Resueltos.docx</a></li>
+            </ul>
+        </aside>
+
+        <!-- Panel Derecho: Visor del Contenido / Documento -->
+        <section class="week-content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 20px;">
+                <div>
+                    <h3>Guía de Laboratorio 01 — Algoritmos Básicos</h3>
+                    <p style="color: var(--muted); font-size: 12px; margin-top: 4px;">Publicado el 15 de Septiembre, 2026</p>
+                </div>
+                <a href="#" class="btn btn-primary" style="font-size: 12px;">Descargar PDF ↓</a>
+            </div>
+
+            <!-- Previsualización / Lector HTML -->
+            <div style="line-height: 1.8; color: var(--ink);">
+                <h4>1. Objetivos de la Práctica</h4>
+                <p style="color: var(--muted); margin-bottom: 16px;">
+                    Comprender la construcción de pseudocódigo, diagramas de flujo y análisis asintótico inicial mediante ejemplos prácticos.
+                </p>
+                
+                <h4>2. Indicaciones</h4>
+                <p style="color: var(--muted); margin-bottom: 16px;">
+                    Diseñar e implementar los ejercicios propuestos en el entorno de desarrollo y verificar la complejidad temporal $O(n)$ solicitada.
+                </p>
+            </div>
+        </section>
+    </div>
 </main>
-<footer class="footer"><div class="container footer-inner"><div><div class="brand"><span class="brand-mark">A</span> ACADEMIA</div><p>Material académico.</p></div><div class="footer-links"><span>Unidad 1</span><span>Semana 1</span><span>Recursos</span><span>Acerca de mí</span></div></div></footer>
-<script src="js/theme.js"></script>
-</body></html>
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="footer-brand">
+            <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+                <span class="brand-mark">A</span>
+                <span>ACADEMIA</span>
+            </a>
+            <p>Portafolio personal de Ingeniería de Sistemas y Computación.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Navegación</h4>
+            <a href="${pageContext.request.contextPath}/index.jsp">Inicio</a>
+            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a>
+            <a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a>
+        </div>
+        <div class="footer-column">
+            <h4>Gestión</h4>
+            <a href="${pageContext.request.contextPath}/login.jsp">Iniciar sesión</a>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp">Administración</a>
+        </div>
+    </div>
+</footer>
+
+<script src="${pageContext.request.contextPath}/js/theme.js"></script>
+</body>
+</html>
