@@ -91,13 +91,15 @@ button, input, textarea, select {
     justify-content: space-between;
 }
 
-.brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: .08em;
+
+/* AJUSTE PARA EL LOGO INSTITUCIONAL EN EL HEADER */
+.brand-mark-img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
 }
 
 .brand-mark {

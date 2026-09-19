@@ -25,19 +25,20 @@
 
 <header class="site-header">
     <nav class="site-nav">
-        <a class="brand" href="index.jsp">
-            <span class="brand-mark">&lt;/&gt;</span>
-            <span>ACADEMIA</span>
+       <!-- LOGO CON IMAGEN INSTITUCIONAL -->
+        <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
+            <span>Universidad Peruana los Andes</span>
         </a>
 
         <ul class="nav-links">
-            <li><a class="active" href="index.jsp">Inicio</a></li>
-            <li><a href="unidades.jsp">Unidades</a></li>
-            <li><a href="acerca.jsp">Acerca de mí</a></li>
+            <li><a class="active" href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
+            <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
         </ul>
 
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
+            <button type="button" id="themeToggle" class="theme-toggle">
                 <span class="theme-icon">🌙</span>
                 <span class="theme-label">Tema</span>
             </button>

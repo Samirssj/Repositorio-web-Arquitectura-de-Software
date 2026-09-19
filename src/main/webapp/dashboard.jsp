@@ -30,8 +30,8 @@
     <!-- BARRA LATERAL (SIDEBAR ADMIN SEGÚN FIGMA) -->
     <aside class="dashboard-sidebar">
         <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-            <span class="brand-mark">&lt;/&gt;</span>
-            <span>ACADEMIA</span>
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
+            <span>Universidad Peruana los Andes</span>
         </a>
 
         <div class="sidebar-label">Panel Admin</div>
