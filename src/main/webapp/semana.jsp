@@ -1,10 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.miportafolio.model.Archivo" %>
+<%@ page import="com.miportafolio.dao.ArchivoDAO" %>
+<%
+    Integer numeroSemana = (Integer) request.getAttribute("numeroSemana");
+    if (numeroSemana == null) {
+        String numParam = request.getParameter("num");
+        numeroSemana = (numParam != null && !numParam.trim().isEmpty()) ? Integer.parseInt(numParam.trim()) : 1;
+    }
+
+    List<Archivo> recursos = (List<Archivo>) request.getAttribute("recursos");
+    
+    // Respaldo: si recursos viene nulo (porque se accedió al JSP directo), consulta la BD
+    if (recursos == null) {
+        ArchivoDAO dao = new ArchivoDAO();
+        recursos = dao.obtenerArchivosPorSemana(numeroSemana);
+    }
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos de la Semana | Academia</title>
+    <title>Semana <%= String.format("%02d", numeroSemana) %> | Academia</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
@@ -31,7 +49,7 @@
 
         <ul class="nav-links desktop-only">
             <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
-            <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a class="active" href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
             <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
         </ul>
 
@@ -52,7 +70,7 @@
     
     <ul class="sidebar-nav">
         <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
-        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a class="active" href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
         <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
         <li><a href="${pageContext.request.contextPath}/login.jsp">🔐 Administración</a></li>
     </ul>
@@ -60,40 +78,52 @@
 
 <main class="page-shell">
     <div style="margin-bottom: 24px;">
-        <span class="section-label">UNIDAD 1 · SEMANA 01</span>
-        <h1 class="page-title">Introducción a Algoritmos</h1>
+        <span class="section-label">RECURSOS ACADÉMICOS</span>
+        <h1 class="page-title">Semana <%= String.format("%02d", numeroSemana) %></h1>
     </div>
 
     <div class="unit-detail-layout">
+        <!-- BARRA LATERAL DE NAVEGACIÓN ENTRE SEMANAS -->
         <aside class="sidebar-weeks">
-            <h4>Materiales Disponibles</h4>
+            <h4>Semanas de Clase</h4>
             <ul class="week-menu">
-                <li><a href="#" class="active">📄 Guía de Laboratorio 01.pdf</a></li>
-                <li><a href="#">📊 Diapositivas - Lógica.pdf</a></li>
-                <li><a href="#">📝 Ejercicios Resueltos.docx</a></li>
+                <% for (int i = 1; i <= 4; i++) { %>
+                    <li>
+                        <a href="semana?num=<%= i %>" class="<%= (i == numeroSemana) ? "active" : "" %>">
+                            <span>W<%= i %></span> · Semana <%= String.format("%02d", i) %>
+                        </a>
+                    </li>
+                <% } %>
             </ul>
         </aside>
 
-        <section class="week-content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 20px;">
-                <div>
-                    <h3>Guía de Laboratorio 01 — Algoritmos Básicos</h3>
-                    <p style="color: var(--muted); font-size: 12px; margin-top: 4px;">Publicado el 15 de Septiembre, 2026</p>
-                </div>
-                <a href="#" class="btn btn-primary" style="font-size: 12px;">Descargar PDF ↓</a>
-            </div>
-
-            <div style="line-height: 1.8; color: var(--ink);">
-                <h4>1. Objetivos de la Práctica</h4>
-                <p style="color: var(--muted); margin-bottom: 16px;">
-                    Comprender la construcción de pseudocódigo, diagramas de flujo y análisis asintótico inicial mediante ejemplos prácticos.
-                </p>
-                
-                <h4>2. Indicaciones</h4>
-                <p style="color: var(--muted); margin-bottom: 16px;">
-                    Diseñar e implementar los ejercicios propuestos en el entorno de desarrollo y verificar la complejidad temporal solicitada.
-                </p>
-            </div>
+        <!-- CONTENIDO DINÁMICO DESDE LA BASE DE DATOS -->
+        <section class="weeks-content">
+            <% if (recursos != null && !recursos.isEmpty()) { 
+                for (Archivo recurso : recursos) { %>
+                    <article class="week-content-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;">
+                            <div>
+                                <span class="section-label"><%= recurso.getTipo().toUpperCase() %></span>
+                                <h3 style="margin-top: 4px;"><%= recurso.getNombre() %></h3>
+                            </div>
+                            <a href="<%= recurso.getUrl() %>" target="_blank" class="btn btn-primary" style="font-size: 12px;">
+                                Descargar / Ver recurso →
+                            </a>
+                        </div>
+                        <p style="color: var(--muted); font-size: 13px;">
+                            <%= recurso.getDescripcion() != null ? recurso.getDescripcion() : "Sin descripción disponible." %>
+                        </p>
+                    </article>
+            <%   } 
+               } else { %>
+                    <article class="week-content-card" style="text-align: center; padding: 40px;">
+                        <h3>No hay materiales cargados para esta semana</h3>
+                        <p style="color: var(--muted); margin-top: 8px;">
+                            Los recursos subidos desde el <a href="dashboard.jsp" style="color: var(--blue); font-weight: 700;">panel de administración</a> aparecerán aquí.
+                        </p>
+                    </article>
+            <% } %>
         </section>
     </div>
 </main>

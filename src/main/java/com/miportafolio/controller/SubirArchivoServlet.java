@@ -3,8 +3,8 @@ package com.miportafolio.controller;
 import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.File;
@@ -48,6 +48,17 @@ public class SubirArchivoServlet extends HttpServlet {
             String descripcion = request.getParameter("descripcion");
             String tipo = request.getParameter("tipo");
             
+            // CAPTURA Y VALIDACIÓN DE LA SEMANA
+            String semanaParam = request.getParameter("semana");
+            int semana = 1; // Valor predeterminado
+            if (semanaParam != null && !semanaParam.trim().isEmpty()) {
+                try {
+                    semana = Integer.parseInt(semanaParam.trim());
+                } catch (NumberFormatException e) {
+                    semana = 1;
+                }
+            }
+            
             Part filePart = request.getPart("archivo");
             String fileName = filePart.getSubmittedFileName();
             
@@ -59,35 +70,37 @@ public class SubirArchivoServlet extends HttpServlet {
                     uploadDirFile.mkdirs();
                 }
                 
-                // Guardar archivo
+                // Guardar archivo en disco
                 Path filePath = Paths.get(uploadDir, fileName);
                 try (InputStream input = filePart.getInputStream()) {
                     Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
                 
-                if (nombre == null || nombre.isEmpty()) {
+                if (nombre == null || nombre.trim().isEmpty()) {
                     nombre = fileName;
                 }
-                if (tipo == null || tipo.isEmpty()) {
+                if (tipo == null || tipo.trim().isEmpty()) {
                     tipo = obtenerTipoPorExtension(fileName);
                 }
                 
+                // GUARDADO CON LA SEMANA INCLUIDA
                 var archivo = storageService.guardarArchivo(
                     nombre, 
                     descripcion != null ? descripcion : "", 
                     tipo != null ? tipo : "otro", 
                     filePath, 
-                    usuario.getId()
+                    usuario.getId(),
+                    semana // <--- Pasa el entero de la semana
                 );
                 
                 if (archivo != null) {
-                    response.sendRedirect("dashboard?mensaje=archivo_subido");
+                    response.sendRedirect("dashboard.jsp?mensaje=archivo_subido");
                 } else {
-                    request.setAttribute("error", "Error al guardar el archivo");
+                    request.setAttribute("error", "Error al guardar el archivo en la base de datos.");
                     request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
                 }
             } else {
-                request.setAttribute("error", "No se seleccionó ningún archivo");
+                request.setAttribute("error", "No se seleccionó ningún archivo.");
                 request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
             }
         } catch (Exception e) {
@@ -108,4 +121,5 @@ public class SubirArchivoServlet extends HttpServlet {
         }
         return "otro";
     }
+
 }

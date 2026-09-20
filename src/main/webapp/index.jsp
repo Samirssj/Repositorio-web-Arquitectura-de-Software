@@ -138,5 +138,11 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/js/theme.js"></script>
+<!-- CDN Oficial del Cliente JS de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-client@2"></script>
+
+<!-- Tus archivos de configuración y lógica -->
+<script src="${pageContext.request.contextPath}/js/config.js"></script>
+<script src="${pageContext.request.contextPath}/js/app.js"></script>
 </body>
 </html>

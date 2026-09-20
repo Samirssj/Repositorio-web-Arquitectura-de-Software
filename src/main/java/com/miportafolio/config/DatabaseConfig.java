@@ -1,318 +1,46 @@
 package com.miportafolio.config;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class DatabaseConfig {
 
-    private static HikariDataSource dataSource;
-
-    private static Properties properties;
-
-
-    // =========================================================
-    // INICIALIZACIÓN
-    // =========================================================
+    // Credenciales fijas de Supabase
+    private static final String URL = "jdbc:postgresql://db.hpsyiynzgtetsimzzfyc.supabase.co:5432/postgres";
+    private static final String USER = "postgres";
+    private static final String PASS = "FZ7i7APRePevXn_8";
+    
+    // Ruta de subida predeterminada para el almacenamiento
+    private static final String UPLOAD_DIR = "uploads";
 
     static {
-
         try {
-
-            cargarConfiguracion();
-
-            HikariConfig config =
-                    new HikariConfig();
-
-
-            // -------------------------------------------------
-            // DATOS DE CONEXIÓN
-            // -------------------------------------------------
-
-            String jdbcUrl =
-                    obtenerConfiguracion(
-                            "SUPABASE_URL",
-                            "supabase.url"
-                    );
-
-            String username =
-                    obtenerConfiguracion(
-                            "SUPABASE_USERNAME",
-                            "supabase.username"
-                    );
-
-            String password =
-                    obtenerConfiguracion(
-                            "SUPABASE_PASSWORD",
-                            "supabase.password"
-                    );
-
-
-            // -------------------------------------------------
-            // HIKARI
-            // -------------------------------------------------
-
-            config.setJdbcUrl(jdbcUrl);
-
-            config.setUsername(username);
-
-            config.setPassword(password);
-
-            config.setDriverClassName(
-                    "org.postgresql.Driver"
-            );
-
-
-            config.setMaximumPoolSize(10);
-
-            config.setMinimumIdle(2);
-
-            config.setIdleTimeout(30000);
-
-            config.setMaxLifetime(1800000);
-
-            config.setConnectionTimeout(10000);
-
-
-            dataSource =
-                    new HikariDataSource(config);
-
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(
-                    "Error al configurar la conexión a Supabase.",
-                    e
-            );
-
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al cargar el driver JDBC de PostgreSQL.", e);
         }
-
     }
 
-
-    // =========================================================
-    // CARGAR APPLICATION.PROPERTIES
-    // =========================================================
-
-    private static void cargarConfiguracion() {
-
-        properties =
-                new Properties();
-
-
-        try {
-
-            InputStream input =
-                    DatabaseConfig.class
-                            .getClassLoader()
-                            .getResourceAsStream(
-                                    "application.properties"
-                            );
-
-
-            if (input != null) {
-
-                properties.load(input);
-
-                input.close();
-
-            }
-
-        } catch (IOException e) {
-
-            throw new RuntimeException(
-                    "Error al cargar application.properties",
-                    e
-            );
-
-        }
-
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASS);
     }
 
-
-    // =========================================================
-    // OBTENER CONFIGURACIÓN
-    // =========================================================
-
-    private static String obtenerConfiguracion(
-            String variableEntorno,
-            String propiedad
-    ) {
-
-
-        // -----------------------------------------------------
-        // Primero buscamos Environment Variable
-        // -----------------------------------------------------
-
-        String valor =
-                System.getenv(
-                        variableEntorno
-                );
-
-
-        if (
-                valor != null &&
-                !valor.trim().isEmpty()
-        ) {
-
-            return valor.trim();
-
+    // MÉTODO REQUERIDO POR StorageService.java
+    public static String getProperty(String key) {
+        if ("upload.directory".equals(key)) {
+            return UPLOAD_DIR;
         }
-
-
-        // -----------------------------------------------------
-        // Si no existe, usamos application.properties
-        // -----------------------------------------------------
-
-        if (properties != null) {
-
-            valor =
-                    properties.getProperty(
-                            propiedad
-                    );
-
-
-            if (
-                    valor != null &&
-                    !valor.trim().isEmpty() &&
-                    !valor.equals("your-password") &&
-                    !valor.contains("your-project")
-            ) {
-
-                return valor.trim();
-
-            }
-
+        if ("supabase.url".equals(key) || "SUPABASE_URL".equals(key)) {
+            return URL;
         }
-
-
-        // -----------------------------------------------------
-        // No existe configuración
-        // -----------------------------------------------------
-
-        throw new RuntimeException(
-                "No se encontró la configuración: "
-                + variableEntorno
-        );
-
-    }
-
-
-    // =========================================================
-    // CONEXIÓN
-    // =========================================================
-
-    public static Connection getConnection()
-            throws SQLException {
-
-        return dataSource.getConnection();
-
-    }
-
-
-    // =========================================================
-    // CERRAR POOL
-    // =========================================================
-
-    public static void closePool() {
-
-        if (
-                dataSource != null &&
-                !dataSource.isClosed()
-        ) {
-
-            dataSource.close();
-
+        if ("supabase.username".equals(key) || "SUPABASE_USERNAME".equals(key)) {
+            return USER;
         }
-
-    }
-
-
-    // =========================================================
-    // OBTENER PROPIEDAD
-    // =========================================================
-
-    public static String getProperty(
-            String key
-    ) {
-
-        // -----------------------------------------------------
-        // Variables relacionadas con uploads
-        // -----------------------------------------------------
-
-        if (
-                key.equals("upload.directory")
-        ) {
-
-            String uploadDirectory =
-                    System.getenv(
-                            "UPLOAD_DIRECTORY"
-                    );
-
-
-            if (
-                    uploadDirectory != null &&
-                    !uploadDirectory.trim().isEmpty()
-            ) {
-
-                return uploadDirectory.trim();
-
-            }
-
+        if ("supabase.password".equals(key) || "SUPABASE_PASSWORD".equals(key)) {
+            return PASS;
         }
-
-
-        // -----------------------------------------------------
-        // Properties locales
-        // -----------------------------------------------------
-
-        if (properties != null) {
-
-            String value =
-                    properties.getProperty(key);
-
-
-            if (
-                    value != null &&
-                    !value.trim().isEmpty()
-            ) {
-
-                return value;
-
-            }
-
-        }
-
-
-        // -----------------------------------------------------
-        // Valores predeterminados
-        // -----------------------------------------------------
-
-        if (
-                key.equals("upload.directory")
-        ) {
-
-            return "/usr/local/tomcat/uploads";
-
-        }
-
-
-        if (
-                key.equals("upload.max.size")
-        ) {
-
-            return "10485760";
-
-        }
-
-
         return null;
-
     }
-
 }

@@ -37,16 +37,17 @@ public class UsuarioDAO {
     }
     
     public Usuario buscarPorEmail(String email) {
-        String sql = "SELECT * FROM usuarios WHERE email = ?";
+        // Nausar ti LOWER(TRIM(email)) tapno awan abaria ti case sensitivity ken whitespace
+        String sql = "SELECT * FROM usuarios WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return mapearUsuario(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearUsuario(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,10 +62,10 @@ public class UsuarioDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return mapearUsuario(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearUsuario(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,8 +129,17 @@ public class UsuarioDAO {
         usuario.setPassword(rs.getString("password"));
         usuario.setNombre(rs.getString("nombre"));
         usuario.setRol(rs.getString("rol"));
-        usuario.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        usuario.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+        
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            usuario.setCreatedAt(createdAt.toLocalDateTime());
+        }
+        
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            usuario.setUpdatedAt(updatedAt.toLocalDateTime());
+        }
+        
         return usuario;
     }
 }

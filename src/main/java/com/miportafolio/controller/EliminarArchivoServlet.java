@@ -1,6 +1,5 @@
 package com.miportafolio.controller;
 
-import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

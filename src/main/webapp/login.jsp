@@ -7,6 +7,80 @@
     <title>Iniciar Sesión | Academia</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <style>
+        /* Estilos específicos para el login con soporte completo de tema oscuro */
+        .auth-brand {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: var(--blue);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .login-box input[type="email"],
+        .login-box input[type="password"] {
+            transition: all 0.2s ease;
+        }
+
+        .login-box input[type="email"]:focus,
+        .login-box input[type="password"]:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(49, 94, 251, 0.1);
+        }
+
+        .login-box .btn-primary {
+            width: 100%;
+            margin-top: 8px;
+            height: 44px;
+            font-size: 14px;
+            font-weight: 700;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-box .btn-primary:hover {
+            background: var(--blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 94, 251, 0.3);
+        }
+
+        .login-box .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .alert-error {
+            background: rgba(235, 102, 116, 0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+    </style>
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -25,29 +99,25 @@
         </p>
 
         <% if (request.getAttribute("error") != null) { %>
-            <div style="background: rgba(239, 113, 128, 0.15); border: 1px solid #ef7180; color: #ef7180; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px;">
+            <div class="alert alert-error">
                 <%= request.getAttribute("error") %>
             </div>
         <% } %>
 
-        <form action="LoginServlet" method="POST">
+        <form action="${pageContext.request.contextPath}/login" method="POST">
             <div class="form-group">
-                <label>Correo electrónico</label>
-                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+                <label for="email">Correo electrónico</label>
+                <input id="email" type="email" name="email" placeholder="correo@ejemplo.com" required>
             </div>
-
             <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" name="password" placeholder="********" required>
             </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; min-height: 42px;">
-                Iniciar sesión
-            </button>
+            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
         </form>
 
-        <div style="margin-top: 20px; text-align: center;">
-            <a href="index.jsp" style="color: var(--blue); font-size: 12px; font-weight: 700;">← Volver al inicio</a>
+        <div style="text-align: center;">
+            <a href="index.jsp" class="back-link">← Volver al inicio</a>
         </div>
     </div>
 </div>

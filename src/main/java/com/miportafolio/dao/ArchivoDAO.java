@@ -10,7 +10,7 @@ import java.util.List;
 public class ArchivoDAO {
     
     public boolean crearArchivo(Archivo archivo) {
-        String sql = "INSERT INTO archivos (nombre, descripcion, tipo, url, usuario_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO archivos (nombre, descripcion, tipo, url, usuario_id, semana) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -20,6 +20,7 @@ public class ArchivoDAO {
             stmt.setString(3, archivo.getTipo());
             stmt.setString(4, archivo.getUrl());
             stmt.setLong(5, archivo.getUsuarioId());
+            stmt.setInt(6, archivo.getSemana());
             
             int filasAfectadas = stmt.executeUpdate();
             
@@ -44,10 +45,10 @@ public class ArchivoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return mapearArchivo(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearArchivo(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,6 +56,26 @@ public class ArchivoDAO {
         return null;
     }
     
+    // MÉTODO REQUERIDO POR EL SEMANASERVLET
+    public List<Archivo> obtenerArchivosPorSemana(int numeroSemana) {
+        String sql = "SELECT * FROM archivos WHERE semana = ? ORDER BY created_at DESC";
+        List<Archivo> archivos = new ArrayList<>();
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, numeroSemana);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    archivos.add(mapearArchivo(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return archivos;
+    }
+
     public List<Archivo> listarPorUsuario(Long usuarioId) {
         String sql = "SELECT * FROM archivos WHERE usuario_id = ? ORDER BY created_at DESC";
         List<Archivo> archivos = new ArrayList<>();
@@ -63,10 +84,10 @@ public class ArchivoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, usuarioId);
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                archivos.add(mapearArchivo(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    archivos.add(mapearArchivo(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,7 +113,7 @@ public class ArchivoDAO {
     }
     
     public boolean actualizarArchivo(Archivo archivo) {
-        String sql = "UPDATE archivos SET nombre = ?, descripcion = ?, tipo = ?, url = ? WHERE id = ?";
+        String sql = "UPDATE archivos SET nombre = ?, descripcion = ?, tipo = ?, url = ?, semana = ? WHERE id = ?";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -101,7 +122,8 @@ public class ArchivoDAO {
             stmt.setString(2, archivo.getDescripcion());
             stmt.setString(3, archivo.getTipo());
             stmt.setString(4, archivo.getUrl());
-            stmt.setLong(5, archivo.getId());
+            stmt.setInt(5, archivo.getSemana());
+            stmt.setLong(6, archivo.getId());
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -132,8 +154,24 @@ public class ArchivoDAO {
         archivo.setTipo(rs.getString("tipo"));
         archivo.setUrl(rs.getString("url"));
         archivo.setUsuarioId(rs.getLong("usuario_id"));
-        archivo.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        archivo.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+        
+        // Manejo de la columna semana (si existe en el ResultSet)
+        try {
+            archivo.setSemana(rs.getInt("semana"));
+        } catch (SQLException e) {
+            archivo.setSemana(1); // Valor por defecto si no está presente
+        }
+
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            archivo.setCreatedAt(createdAt.toLocalDateTime());
+        }
+        
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            archivo.setUpdatedAt(updatedAt.toLocalDateTime());
+        }
+
         return archivo;
     }
 }

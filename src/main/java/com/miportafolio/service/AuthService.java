@@ -27,8 +27,36 @@ public class AuthService {
     public Usuario autenticar(String email, String password) {
         Usuario usuario = usuarioDAO.buscarPorEmail(email);
         
-        if (usuario != null && BCrypt.checkpw(password, usuario.getPassword())) {
-            return usuario;
+        if (usuario == null) {
+            return null;
+        }
+        
+        String storedHash = usuario.getPassword();
+        
+        // Validar que el hash no sea nulo o vacío
+        if (storedHash == null || storedHash.trim().isEmpty()) {
+            return null;
+        }
+        
+        // Normalización de prefijos BCrypt para compatibilidad
+        String normalizedHash = storedHash;
+        if (storedHash.startsWith("$2a$")) {
+            normalizedHash = "$2b$" + storedHash.substring(4);
+        } else if (storedHash.startsWith("$2y$")) {
+            normalizedHash = "$2b$" + storedHash.substring(4);
+        }
+        
+        try {
+            // Verificación BCrypt con manejo de excepciones
+            if (BCrypt.checkpw(password, normalizedHash)) {
+                return usuario;
+            }
+        } catch (IllegalArgumentException e) {
+            // Fallback para contraseñas en texto plano durante desarrollo
+            System.err.println("Error BCrypt, intentando fallback: " + e.getMessage());
+            if (password.equals(storedHash)) {
+                return usuario;
+            }
         }
         
         return null;

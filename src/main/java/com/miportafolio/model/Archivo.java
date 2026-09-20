@@ -9,6 +9,7 @@ public class Archivo {
     private String tipo;
     private String url;
     private Long usuarioId;
+    private int semana;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -20,6 +21,14 @@ public class Archivo {
         this.tipo = tipo;
         this.url = url;
         this.usuarioId = usuarioId;
+    }
+
+    public int getSemana() {
+        return semana;
+    }
+
+    public void setSemana(int semana) {
+        this.semana = semana;
     }
 
     // Getters and Setters

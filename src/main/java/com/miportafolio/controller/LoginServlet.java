@@ -11,41 +11,49 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private AuthService authService;
-    
+
     @Override
     public void init() throws ServletException {
         super.init();
-        authService = new AuthService();
+        this.authService = new AuthService();
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Si ya está autenticado, redirigir al dashboard
         HttpSession session = request.getSession(false);
+        
+        // No naka-loginen ti usuario, idiketan a deretso idiay dashboard
         if (session != null && session.getAttribute("usuario") != null) {
-            response.sendRedirect("dashboard");
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
             return;
         }
+        
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
-        Usuario usuario = authService.autenticar(email, password);
-        
-        if (usuario != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("usuario", usuario);
-            session.setMaxInactiveInterval(1800); // 30 minutos
-            
-            response.sendRedirect("dashboard");
+
+        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            request.setAttribute("error", "Irekado amin dagiti porma.");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            return;
+        }
+
+        Usuario usuarioAutenticado = authService.autenticar(email, password);
+
+        if (usuarioAutenticado != null) {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuarioAutenticado);
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         } else {
-            request.setAttribute("error", "Email o contraseña incorrectos");
+            request.setAttribute("error", "Maikontra ti email wenno password. Padasem manen.");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }

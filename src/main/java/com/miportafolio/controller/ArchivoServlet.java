@@ -8,8 +8,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 @WebServlet("/archivos")
@@ -27,32 +25,47 @@ public class ArchivoServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login");
+            response.sendRedirect("login.jsp");
             return;
         }
         
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        
         String action = request.getParameter("action");
         
-        if ("listar".equals(action)) {
-            List<Archivo> archivos = storageService.listarArchivosPorUsuario(usuario.getId());
-            request.setAttribute("archivos", archivos);
-            request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
-        } else if ("ver".equals(action)) {
-            Long id = Long.parseLong(request.getParameter("id"));
-            Archivo archivo = storageService.obtenerArchivo(id);
-            
-            if (archivo != null) {
-                request.setAttribute("archivo", archivo);
-                request.getRequestDispatcher("/archivo_detalle.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("dashboard?error=archivo_no_encontrado");
+        if ("eliminar".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam != null) {
+                try {
+                    Long id = Long.parseLong(idParam);
+                    storageService.eliminarArchivo(id);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
-        } else {
-            List<Archivo> archivos = storageService.listarArchivosPorUsuario(usuario.getId());
-            request.setAttribute("archivos", archivos);
-            request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
+            response.sendRedirect("dashboard.jsp");
+            return;
+        } 
+        
+        if ("ver".equals(action)) {
+            try {
+                Long id = Long.parseLong(request.getParameter("id"));
+                Archivo archivo = storageService.obtenerArchivo(id);
+                
+                if (archivo != null) {
+                    request.setAttribute("archivo", archivo);
+                    request.getRequestDispatcher("/archivo_detalle.jsp").forward(request, response);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            response.sendRedirect("dashboard.jsp?error=archivo_no_encontrado");
+            return;
         }
+        
+        // Por defecto: Listar archivos y redirigir al panel de administración
+        List<Archivo> archivos = storageService.listarArchivosPorUsuario(usuario.getId());
+        request.setAttribute("archivos", archivos);
+        request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
     }
 }
