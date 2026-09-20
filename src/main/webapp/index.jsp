@@ -8,44 +8,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia | Repositorio de Software</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-
     <script>
         (function () {
-            const theme = localStorage.getItem("academia-theme") || "dark";
-            document.documentElement.setAttribute("data-theme", theme);
+            const savedTheme = localStorage.getItem("academia-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
         })();
     </script>
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
 <header class="site-header">
     <nav class="site-nav">
-       <!-- LOGO CON IMAGEN INSTITUCIONAL -->
+        <div class="nav-left">
+            <button type="button" id="menuToggle" class="menu-toggle" aria-label="Abrir menú">☰</button>
+        </div>
+
         <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
-            <span>Universidad Peruana los Andes</span>
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+            <span class="brand-text">UPLA</span>
         </a>
 
-        <ul class="nav-links">
+        <ul class="nav-links desktop-only">
             <li><a class="active" href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
             <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
             <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
         </ul>
 
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle">
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
                 <span class="theme-icon">🌙</span>
-                <span class="theme-label">Tema</span>
             </button>
             <div class="avatar">SR</div>
         </div>
     </nav>
 </header>
+
+<aside id="mobileSidebar" class="mobile-sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menú</span>
+        <button type="button" id="closeSidebar" class="close-sidebar-btn" aria-label="Cerrar menú">✕</button>
+    </div>
+    
+    <ul class="sidebar-nav">
+        <li><a class="active" href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
+        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
+        <li><a href="${pageContext.request.contextPath}/login.jsp">🔐 Administración</a></li>
+    </ul>
+</aside>
 
 <main class="page-shell">
     <section class="hero-panel">
@@ -103,26 +117,26 @@
 <footer class="site-footer">
     <div class="site-footer-inner">
         <div class="footer-brand">
-            <a class="brand" href="index.jsp">
-                <span class="brand-mark">&lt;/&gt;</span>
-                <span>ACADEMIA</span>
+            <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+                <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+                <span class="brand-text">UPLA</span>
             </a>
-            <p>Portafolio personal de Ingeniería de Sistemas y Computación.</p>
+            <p style="margin-top: 8px;">Aprender haciendo.</p>
         </div>
         <div class="footer-column">
             <h4>Navegación</h4>
-            <a href="index.jsp">Inicio</a>
-            <a href="unidades.jsp">Unidades</a>
-            <a href="acerca.jsp">Acerca de mí</a>
+            <a href="${pageContext.request.contextPath}/index.jsp">Inicio</a>
+            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a>
+            <a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a>
         </div>
         <div class="footer-column">
             <h4>Gestión</h4>
-            <a href="login.jsp">Iniciar sesión</a>
-            <a href="dashboard.jsp">Administración</a>
+            <a href="${pageContext.request.contextPath}/login.jsp">Iniciar sesión</a>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp">Administración</a>
         </div>
     </div>
 </footer>
 
-<script src="js/theme.js"></script>
+<script src="${pageContext.request.contextPath}/js/theme.js"></script>
 </body>
 </html>

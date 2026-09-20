@@ -1,243 +1,64 @@
 /* ============================================================
-   ACADEMIA
-   CAMBIO DE MODO CLARO / OSCURO
+   SISTEMA DE GESTIÓN DE TEMA Y MENÚ DESPLEGABLE MÓVIL
    ============================================================ */
 
-(function () {
-
-    "use strict";
-
-
-    const STORAGE_KEY =
-        "academia-theme";
-
-
-    /* ========================================================
-       ELEMENTO HTML
-    ======================================================== */
-
-    const html =
-        document.documentElement;
-
-
-    /* ========================================================
-       OBTENER TEMA
-    ======================================================== */
-
-    function getTheme() {
-
-        const saved =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-
-        if (
-            saved === "dark" ||
-            saved === "light"
-        ) {
-
-            return saved;
-
-        }
-
-
-        return "light";
-
-    }
-
-
-    /* ========================================================
-       ACTUALIZAR BOTÓN
-    ======================================================== */
-
-    function updateButton(theme) {
-
-        const button =
-            document.getElementById(
-                "themeToggle"
-            );
-
-
-        if (!button) {
-
-            return;
-
-        }
-
-
-        const icon =
-            button.querySelector(
-                ".theme-icon"
-            );
-
-
-        const label =
-            button.querySelector(
-                ".theme-label"
-            );
-
-
-        if (theme === "dark") {
-
-
-            if (icon) {
-
-                icon.textContent =
-                    "☀";
-
-            }
-
-
-            if (label) {
-
-                label.textContent =
-                    "Modo claro";
-
-            }
-
-
-            button.setAttribute(
-                "aria-label",
-                "Cambiar a modo claro"
-            );
-
-
-            button.setAttribute(
-                "title",
-                "Cambiar a modo claro"
-            );
-
-
-        } else {
-
-
-            if (icon) {
-
-                icon.textContent =
-                    "☾";
-
-            }
-
-
-            if (label) {
-
-                label.textContent =
-                    "Modo oscuro";
-
-            }
-
-
-            button.setAttribute(
-                "aria-label",
-                "Cambiar a modo oscuro"
-            );
-
-
-            button.setAttribute(
-                "title",
-                "Cambiar a modo oscuro"
-            );
-
-        }
-
-    }
-
-
-    /* ========================================================
-       APLICAR TEMA
-    ======================================================== */
-
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // 1. ALTERNADOR DE TEMA (DARK / LIGHT MODE)
+    const themeButtons = document.querySelectorAll("#themeToggle, .theme-toggle");
+    
     function applyTheme(theme) {
-
-        html.setAttribute(
-            "data-theme",
-            theme
-        );
-
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            theme
-        );
-
-
-        updateButton(
-            theme
-        );
-
-    }
-
-
-    /* ========================================================
-       CAMBIAR TEMA
-    ======================================================== */
-
-    function toggleTheme() {
-
-        const current =
-            html.getAttribute(
-                "data-theme"
-            ) || "light";
-
-
-        const next =
-            current === "dark"
-                ? "light"
-                : "dark";
-
-
-        applyTheme(next);
-
-    }
-
-
-    /* ========================================================
-       INICIALIZAR
-    ======================================================== */
-
-    const initialTheme =
-        getTheme();
-
-
-    html.setAttribute(
-        "data-theme",
-        initialTheme
-    );
-
-
-    /* ========================================================
-       DOM READY
-    ======================================================== */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-
-            applyTheme(
-                getTheme()
-            );
-
-
-            const button =
-                document.getElementById(
-                    "themeToggle"
-                );
-
-
-            if (button) {
-
-                button.addEventListener(
-                    "click",
-                    toggleTheme
-                );
-
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("academia-theme", theme);
+        
+        // Actualiza los íconos de todos los botones de tema en la pantalla
+        themeButtons.forEach(btn => {
+            const iconSpan = btn.querySelector(".theme-icon");
+            if (iconSpan) {
+                iconSpan.textContent = theme === "dark" ? "🌙" : "☀️";
+            } else {
+                btn.textContent = theme === "dark" ? "🌙" : "☀️";
             }
+        });
+    }
+
+    // Inicialización del estado del tema al cargar
+    const savedTheme = localStorage.getItem("academia-theme") || "dark";
+    applyTheme(savedTheme);
+
+    // Asignar evento click a todos los botones de tema
+    themeButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            applyTheme(newTheme);
+        });
+    });
 
 
+    // 2. CONTROL DEL MENÚ LATERAL FLOATING (OFF-CANVAS DRAWER)
+    const menuToggle = document.getElementById("menuToggle");
+    const closeSidebar = document.getElementById("closeSidebar");
+    const mobileSidebar = document.getElementById("mobileSidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+    function openMenu() {
+        if (mobileSidebar && sidebarOverlay) {
+            mobileSidebar.classList.add("open");
+            sidebarOverlay.classList.add("active");
+            document.body.style.overflow = "hidden"; // Deshabilita el scroll del fondo
         }
-    );
+    }
 
+    function closeMenu() {
+        if (mobileSidebar && sidebarOverlay) {
+            mobileSidebar.classList.remove("open");
+            sidebarOverlay.classList.remove("active");
+            document.body.style.overflow = ""; // Restaura el scroll
+        }
+    }
 
-})();
+    if (menuToggle) menuToggle.addEventListener("click", openMenu);
+    if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+    if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeMenu);
+});

@@ -2,7 +2,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.miportafolio.model.Archivo" %>
 <%
-    // Verificación básica de sesión para administrador
     com.miportafolio.model.Usuario usuarioSesion = (com.miportafolio.model.Usuario) session.getAttribute("usuario");
     if (usuarioSesion == null || !"admin".equals(usuarioSesion.getRol())) {
         response.sendRedirect("login.jsp");
@@ -26,54 +25,73 @@
 </head>
 <body>
 
-<div class="dashboard-layout">
-    <!-- BARRA LATERAL (SIDEBAR ADMIN SEGÚN FIGMA) -->
-    <aside class="dashboard-sidebar">
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+<header class="site-header">
+    <nav class="site-nav">
+        <div class="nav-left">
+            <button type="button" id="menuToggle" class="menu-toggle" aria-label="Abrir menú">☰</button>
+        </div>
+
         <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
-            <span>Universidad Peruana los Andes</span>
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+            <span class="brand-text">UPLA</span>
         </a>
 
-        <div class="sidebar-label">Panel Admin</div>
-        <a href="dashboard.jsp" class="sidebar-link active">Gestión de Archivos</a>
-        <a href="index.jsp" class="sidebar-link">Ver Sitio Público</a>
+        <ul class="nav-links desktop-only">
+            <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
+            <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
+        </ul>
 
-        <div class="sidebar-label" style="margin-top: 40px;">Cuenta</div>
-        <span class="sidebar-link" style="color: #94a3b8; font-size: 11px;"><%= usuarioSesion.getEmail() %></span>
-        <a href="LogoutServlet" class="sidebar-link" style="color: #ef7180;">Cerrar Sesión</a>
-    </aside>
-
-    <!-- ÁREA PRINCIPAL DEL DASHBOARD -->
-    <main class="dashboard-main">
-        <div class="dashboard-top">
-            <div>
-                <h1>Gestión de Contenido Académico</h1>
-                <p>Sube recursos a la base de datos Supabase y gestiona los archivos del repositorio.</p>
-            </div>
-            <button type="button" id="themeToggle" class="theme-toggle">
+        <div class="nav-actions">
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
                 <span class="theme-icon">🌙</span>
             </button>
+            <div class="avatar">SR</div>
+        </div>
+    </nav>
+</header>
+
+<aside id="mobileSidebar" class="mobile-sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menú</span>
+        <button type="button" id="closeSidebar" class="close-sidebar-btn" aria-label="Cerrar menú">✕</button>
+    </div>
+    
+    <ul class="sidebar-nav">
+        <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
+        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
+        <li><a class="active" href="${pageContext.request.contextPath}/dashboard.jsp">🔐 Administración</a></li>
+    </ul>
+</aside>
+
+<div class="page-shell">
+    <main class="dashboard-main">
+        <div style="margin-bottom: 24px;">
+            <h1>Gestión de Contenido Académico</h1>
+            <p style="color: var(--muted); font-size: 14px;">Sube recursos a la base de datos Supabase y gestiona los archivos del repositorio.</p>
         </div>
 
         <div class="dashboard-content">
-            <!-- Formulario de Subida con Drag & Drop -->
-            <section class="upload-section">
-                <h3>Subir Nuevo Recurso</h3>
+            <section class="content-panel">
+                <h3 style="margin-bottom: 16px;">Subir Nuevo Recurso</h3>
                 
                 <form action="${pageContext.request.contextPath}/subir-archivo" method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label>Título del Archivo / Proyecto</label>
-                        <input type="text" name="nombre" placeholder="Ej. Guía 1 - Algoritmos" required>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 4px;">Título del Archivo / Proyecto</label>
+                        <input type="text" name="nombre" placeholder="Ej. Guía 1 - Algoritmos" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
                     </div>
 
-                    <div class="form-group">
-                        <label>Descripción Breve</label>
-                        <textarea name="descripcion" rows="3" placeholder="Ingresa un resumen del contenido..." style="width: 100%; border-radius: 6px; padding: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);"></textarea>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 4px;">Descripción Breve</label>
+                        <textarea name="descripcion" rows="3" placeholder="Ingresa un resumen del contenido..." style="width: 100%; border-radius: 8px; padding: 10px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);"></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Categoría / Tipo de Archivo</label>
-                        <select name="tipo">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 4px;">Categoría / Tipo de Archivo</label>
+                        <select name="tipo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
                             <option value="pdf">Documento PDF</option>
                             <option value="documento">Documento Word / Texto</option>
                             <option value="imagen">Imagen / Diagrama</option>
@@ -91,45 +109,69 @@
                 </form>
             </section>
 
-            <!-- Tabla de Archivos Subidos -->
-            <section class="files-section">
-                <h3>Repositorio Activo</h3>
+            <section class="content-panel" style="margin-top: 24px;">
+                <h3 style="margin-bottom: 16px;">Repositorio Activo</h3>
                 
-                <table class="files-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%
-                            List<Archivo> archivos = (List<Archivo>) request.getAttribute("archivos");
-                            if (archivos != null && !archivos.isEmpty()) {
-                                for (Archivo arch : archivos) {
-                        %>
-                        <tr>
-                            <td><%= arch.getNombre() %></td>
-                            <td><span style="color: var(--blue); font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
-                            <td>
-                                <a href="ArchivoServlet?action=eliminar&id=<%= arch.getId() %>" class="btn btn-danger btn-small" onclick="return confirm('¿Eliminar archivo?');">Eliminar</a>
-                            </td>
-                        </tr>
-                        <%
-                                }
-                            } else {
-                        %>
-                        <tr>
-                            <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">No hay archivos en la base de datos.</td>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--line); text-align: left;">
+                                <th style="padding: 10px;">Nombre</th>
+                                <th style="padding: 10px;">Tipo</th>
+                                <th style="padding: 10px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                                List<Archivo> archivos = (List<Archivo>) request.getAttribute("archivos");
+                                if (archivos != null && !archivos.isEmpty()) {
+                                    for (Archivo arch : archivos) {
+                            %>
+                            <tr style="border-bottom: 1px solid var(--line);">
+                                <td style="padding: 10px;"><%= arch.getNombre() %></td>
+                                <td style="padding: 10px;"><span style="color: var(--blue); font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
+                                <td style="padding: 10px;">
+                                    <a href="ArchivoServlet?action=eliminar&id=<%= arch.getId() %>" style="color: var(--red); font-weight: 700;" onclick="return confirm('¿Eliminar archivo?');">Eliminar</a>
+                                </td>
+                            </tr>
+                            <%
+                                    }
+                                } else {
+                            %>
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">No hay archivos en la base de datos.</td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </div>
     </main>
 </div>
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="footer-brand">
+            <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
+                <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+                <span class="brand-text">UPLA</span>
+            </a>
+            <p style="margin-top: 8px;">Aprender haciendo.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Navegación</h4>
+            <a href="${pageContext.request.contextPath}/index.jsp">Inicio</a>
+            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a>
+            <a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a>
+        </div>
+        <div class="footer-column">
+            <h4>Gestión</h4>
+            <a href="${pageContext.request.contextPath}/login.jsp">Iniciar sesión</a>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp">Administración</a>
+        </div>
+    </div>
+</footer>
 
 <script src="${pageContext.request.contextPath}/js/theme.js"></script>
 </body>

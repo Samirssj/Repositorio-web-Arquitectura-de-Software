@@ -16,28 +16,46 @@
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
 <header class="site-header">
     <nav class="site-nav">
+        <div class="nav-left">
+            <button type="button" id="menuToggle" class="menu-toggle" aria-label="Abrir menú">☰</button>
+        </div>
+
         <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
-            <span>Universidad Peruana los Andes</span>
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+            <span class="brand-text">UPLA</span>
         </a>
 
-        <ul class="nav-links">
+        <ul class="nav-links desktop-only">
             <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
             <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
             <li><a class="active" href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
         </ul>
 
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle">
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
                 <span class="theme-icon">🌙</span>
-                <span class="theme-label">Tema</span>
             </button>
-            <a href="login.jsp" class="btn btn-primary" style="font-size: 12px; min-height: 34px;">Administrar</a>
+            <div class="avatar">SR</div>
         </div>
     </nav>
 </header>
+
+<aside id="mobileSidebar" class="mobile-sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menú</span>
+        <button type="button" id="closeSidebar" class="close-sidebar-btn" aria-label="Cerrar menú">✕</button>
+    </div>
+    <ul class="sidebar-nav">
+        <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
+        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a class="active" href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
+        <li><a href="${pageContext.request.contextPath}/login.jsp">🔐 Administración</a></li>
+    </ul>
+</aside>
 
 <main class="page-shell">
     <div style="margin-bottom: 24px;">
@@ -89,8 +107,8 @@
     <div class="site-footer-inner">
         <div class="footer-brand">
             <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-                <span class="brand-mark">&lt;/&gt;</span>
-                <span>ACADEMIA</span>
+                <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+                <span class="brand-text">UPLA</span>
             </a>
             <p style="margin-top: 8px;">Aprender haciendo.</p>
         </div>

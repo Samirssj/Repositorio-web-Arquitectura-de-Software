@@ -9,33 +9,54 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
         (function () {
-            const savedTheme = localStorage.getItem("academia-theme") || "light";
+            const savedTheme = localStorage.getItem("academia-theme") || "dark";
             document.documentElement.setAttribute("data-theme", savedTheme);
         })();
     </script>
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
 <header class="site-header">
     <nav class="site-nav">
+        <div class="nav-left">
+            <button type="button" id="menuToggle" class="menu-toggle" aria-label="Abrir menú">☰</button>
+        </div>
+
         <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-            <span class="brand-mark">A</span>
-            <span>ACADEMIA</span>
+            <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+            <span class="brand-text">UPLA</span>
         </a>
-        <ul class="nav-links">
+
+        <ul class="nav-links desktop-only">
             <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
-            <li><a class="active" href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
+            <li><a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a></li>
             <li><a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a></li>
         </ul>
+
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle">
-                <span class="theme-icon">☾</span>
-                <span class="theme-label">Modo oscuro</span>
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
+                <span class="theme-icon">🌙</span>
             </button>
-            <div class="avatar">S</div>
+            <div class="avatar">SR</div>
         </div>
     </nav>
 </header>
+
+<aside id="mobileSidebar" class="mobile-sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menú</span>
+        <button type="button" id="closeSidebar" class="close-sidebar-btn" aria-label="Cerrar menú">✕</button>
+    </div>
+    
+    <ul class="sidebar-nav">
+        <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
+        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
+        <li><a href="${pageContext.request.contextPath}/login.jsp">🔐 Administración</a></li>
+    </ul>
+</aside>
 
 <main class="page-shell">
     <div style="margin-bottom: 24px;">
@@ -43,9 +64,7 @@
         <h1 class="page-title">Introducción a Algoritmos</h1>
     </div>
 
-    <!-- LAYOUT DEL LECTOR DE RECURSOS (2 COLUMNAS) -->
     <div class="unit-detail-layout">
-        <!-- Panel Izquierdo: Lista de Materiales -->
         <aside class="sidebar-weeks">
             <h4>Materiales Disponibles</h4>
             <ul class="week-menu">
@@ -55,7 +74,6 @@
             </ul>
         </aside>
 
-        <!-- Panel Derecho: Visor del Contenido / Documento -->
         <section class="week-content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 20px;">
                 <div>
@@ -65,7 +83,6 @@
                 <a href="#" class="btn btn-primary" style="font-size: 12px;">Descargar PDF ↓</a>
             </div>
 
-            <!-- Previsualización / Lector HTML -->
             <div style="line-height: 1.8; color: var(--ink);">
                 <h4>1. Objetivos de la Práctica</h4>
                 <p style="color: var(--muted); margin-bottom: 16px;">
@@ -74,7 +91,7 @@
                 
                 <h4>2. Indicaciones</h4>
                 <p style="color: var(--muted); margin-bottom: 16px;">
-                    Diseñar e implementar los ejercicios propuestos en el entorno de desarrollo y verificar la complejidad temporal $O(n)$ solicitada.
+                    Diseñar e implementar los ejercicios propuestos en el entorno de desarrollo y verificar la complejidad temporal solicitada.
                 </p>
             </div>
         </section>
@@ -85,10 +102,10 @@
     <div class="site-footer-inner">
         <div class="footer-brand">
             <a class="brand" href="${pageContext.request.contextPath}/index.jsp">
-                <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img" style="height: 36px; margin-right: 8px;">
-                <span>Universidad Peruana los Andes</span>
+                <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
+                <span class="brand-text">UPLA</span>
             </a>
-            <p>Portafolio personal de Ingeniería de Sistemas y Computación.</p>
+            <p style="margin-top: 8px;">Aprender haciendo.</p>
         </div>
         <div class="footer-column">
             <h4>Navegación</h4>
