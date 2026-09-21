@@ -97,14 +97,25 @@ MiPortafolio/
 
 ### 1. Configurar Supabase
 
-Crea un archivo `src/main/resources/application.properties` con tus credenciales de Supabase:
+Copia `src/main/resources/application.properties.example` a `src/main/resources/application.properties`
+(ignorado por git) o define las variables de entorno `SUPABASE_URL`, `SUPABASE_USERNAME` y
+`SUPABASE_PASSWORD`. Las variables de entorno tienen prioridad sobre el archivo.
+
+> **Importante:** la "Direct connection" de Supabase (`db.<project>.supabase.co`) solo resuelve a IPv6.
+> En redes sin IPv6 (la mayoría de conexiones domésticas, Docker, Vercel) falla con
+> `Network is unreachable`. Usa la URL del **Session pooler** (IPv4) que muestra el botón
+> *Connect* del dashboard: host `aws-0-<region>.pooler.supabase.com`, puerto `5432`,
+> usuario `postgres.<project-ref>`.
+>
+> Al arrancar, la aplicación registra en el log de Tomcat `Conexion a Supabase OK ...` o
+> `NO SE PUDO CONECTAR A SUPABASE ...` con la causa exacta.
 
 ```properties
-# Supabase Configuration
-supabase.url=jdbc:postgresql://db.your-project.supabase.co:5432/postgres
-supabase.username=postgres
+# Supabase Configuration (Session pooler, IPv4)
+supabase.url=jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres
+supabase.username=postgres.<project-ref>
 supabase.password=your-password
-supabase.database=postgres
+admin.email=correo-que-sera-admin@ejemplo.com
 
 # Application Configuration
 app.name=MiPortafolio
@@ -204,8 +215,7 @@ mvn clean package
 
 1. Accede a `/registro.jsp`
 2. Completa el formulario con tus datos
-3. Selecciona el rol (usuario o administrador)
-4. Haz click en "Registrarse"
+3. Haz click en "Crear cuenta" (el rol lo asigna el servidor: solo `admin.email` obtiene `admin`)
 
 ### Iniciar Sesión
 

@@ -9,7 +9,12 @@ import java.util.List;
 
 public class UsuarioDAO {
     
-    public boolean crearUsuario(Usuario usuario) {
+    /**
+     * Inserta el usuario. Propaga SQLException para que la capa de servicio
+     * distinga entre email duplicado (23505), violacion de CHECK (23514) y
+     * errores de conexion.
+     */
+    public boolean crearUsuario(Usuario usuario) throws SQLException {
         String sql = "INSERT INTO usuarios (email, password, nombre, rol) VALUES (?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConfig.getConnection();
@@ -30,14 +35,11 @@ public class UsuarioDAO {
                 }
                 return true;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return false;
     }
     
-    public Usuario buscarPorEmail(String email) {
-        // Nausar ti LOWER(TRIM(email)) tapno awan abaria ti case sensitivity ken whitespace
+    public Usuario buscarPorEmail(String email) throws SQLException {
         String sql = "SELECT * FROM usuarios WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))";
         
         try (Connection conn = DatabaseConfig.getConnection();
@@ -49,8 +51,6 @@ public class UsuarioDAO {
                     return mapearUsuario(rs);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
