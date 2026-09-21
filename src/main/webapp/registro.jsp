@@ -11,7 +11,6 @@
 <div class="form-group"><label for="nombre">Nombre completo</label><input class="form-control" type="text" id="nombre" name="nombre" required></div>
 <div class="form-group"><label for="email">Correo electrónico</label><input class="form-control" type="email" id="email" name="email" required></div>
 <div class="form-group"><label for="password">Contraseña</label><input class="form-control" type="password" id="password" name="password" required></div>
-<div class="form-group"><label for="rol">Rol</label><select class="form-control" id="rol" name="rol"><option value="usuario">Usuario</option><option value="admin">Administrador</option></select></div>
 <button class="btn btn-primary" type="submit">Crear cuenta</button>
 </form>
 <p class="auth-links">¿Ya tienes cuenta? <a href="login.jsp">Iniciar sesión</a></p><p class="auth-links"><a href="${pageContext.request.contextPath}/">← Volver al inicio</a></p>

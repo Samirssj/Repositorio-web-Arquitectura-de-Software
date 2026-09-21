@@ -1,0 +1,23 @@
+# Copia este archivo a src/main/resources/application.properties (ignorado por git)
+# o define las variables de entorno equivalentes: SUPABASE_URL, SUPABASE_USERNAME,
+# SUPABASE_PASSWORD, UPLOAD_DIRECTORY, ADMIN_EMAIL.
+#
+# Supabase ofrece dos formas de conexion (Dashboard -> Connect):
+#
+# 1) Direct connection (solo IPv6; falla con "Network is unreachable" en redes sin IPv6,
+#    incluyendo la mayoria de proveedores domesticos, Docker y Vercel):
+#    supabase.url=jdbc:postgresql://db.<project-ref>.supabase.co:5432/postgres
+#    supabase.username=postgres
+#
+# 2) Session pooler (IPv4, recomendado para esta aplicacion):
+#    supabase.url=jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres
+#    supabase.username=postgres.<project-ref>
+
+supabase.url=jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:5432/postgres
+supabase.username=postgres.hpsyiynzgtetsimzzfyc
+supabase.password=CAMBIA_ESTA_CONTRASENA
+
+# Correo que recibe rol admin al registrarse (debe coincidir con el CHECK usuarios_admin_reservado)
+admin.email=samircenfe17@gmail.com
+
+upload.directory=uploads

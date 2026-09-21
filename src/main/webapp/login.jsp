@@ -67,6 +67,12 @@
             color: var(--red);
         }
 
+        .alert-success {
+            background: rgba(49, 181, 121, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+
         .back-link {
             display: inline-block;
             margin-top: 20px;
@@ -101,6 +107,11 @@
         <% if (request.getAttribute("error") != null) { %>
             <div class="alert alert-error">
                 <%= request.getAttribute("error") %>
+            </div>
+        <% } %>
+        <% if ("exitoso".equals(request.getParameter("registro"))) { %>
+            <div class="alert alert-success">
+                Cuenta creada correctamente. Ahora puedes iniciar sesión.
             </div>
         <% } %>
 

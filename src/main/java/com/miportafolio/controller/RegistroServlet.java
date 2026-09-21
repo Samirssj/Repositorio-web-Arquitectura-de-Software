@@ -1,6 +1,7 @@
 package com.miportafolio.controller;
 
 import com.miportafolio.service.AuthService;
+import com.miportafolio.service.AuthService.ResultadoRegistro;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -26,29 +27,39 @@ public class RegistroServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String nombre = request.getParameter("nombre");
-        String rol = request.getParameter("rol");
         
-        if (email == null || email.isEmpty() || password == null || password.isEmpty() 
-                || nombre == null || nombre.isEmpty()) {
+        if (email == null || email.trim().isEmpty() || password == null || password.isEmpty() 
+                || nombre == null || nombre.trim().isEmpty()) {
             request.setAttribute("error", "Todos los campos son obligatorios");
             request.getRequestDispatcher("/registro.jsp").forward(request, response);
             return;
         }
         
-        if (rol == null || rol.isEmpty()) {
-            rol = "usuario"; // Rol por defecto
+        ResultadoRegistro resultado = authService.registrar(email, password, nombre);
+        
+        if (resultado == ResultadoRegistro.EXITO) {
+            response.sendRedirect("login?registro=exitoso");
+            return;
         }
         
-        boolean registrado = authService.registrar(email, password, nombre, rol);
-        
-        if (registrado) {
-            response.sendRedirect("login?registro=exitoso");
-        } else {
-            request.setAttribute("error", "El email ya está registrado");
-            request.getRequestDispatcher("/registro.jsp").forward(request, response);
+        request.setAttribute("error", mensajeDeError(resultado));
+        request.getRequestDispatcher("/registro.jsp").forward(request, response);
+    }
+    
+    private static String mensajeDeError(ResultadoRegistro resultado) {
+        switch (resultado) {
+            case EMAIL_DUPLICADO:
+                return "El correo electrónico ya se encuentra registrado";
+            case ROL_NO_PERMITIDO:
+                return "La base de datos rechazó el registro (restricción de rol/correo)";
+            case ERROR_CONEXION:
+                return "No se pudo conectar a la base de datos. Revisa la URL/credenciales de Supabase en el servidor";
+            default:
+                return "Error interno al guardar el usuario. Revisa los logs del servidor";
         }
     }
 }
