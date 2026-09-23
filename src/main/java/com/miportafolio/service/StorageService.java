@@ -17,7 +17,7 @@ public class StorageService {
     
     public StorageService() {
         this.archivoDAO = new ArchivoDAO();
-        this.uploadDirectory = DatabaseConfig.getProperty("upload.directory");
+        this.uploadDirectory = DatabaseConfig.getUploadDirectory();
         
         // Crear directorio de uploads si no existe
         if (this.uploadDirectory != null && !this.uploadDirectory.trim().isEmpty()) {
@@ -26,6 +26,10 @@ public class StorageService {
                 uploadDir.mkdirs();
             }
         }
+    }
+
+    public Path getUploadDirectoryPath() {
+        return Paths.get(this.uploadDirectory);
     }
     
     // Método principal con el parámetro semana
@@ -67,11 +71,8 @@ public class StorageService {
         Archivo archivo = archivoDAO.buscarPorId(id);
         
         if (archivo != null) {
-            // Se limpia 'uploads/' de la URL guardada de forma segura
-            String nombreArchivo = archivo.getUrl().replace("uploads/", "").replace("/uploads/", "");
-            
-            if (this.uploadDirectory != null && !this.uploadDirectory.trim().isEmpty()) {
-                Path rutaArchivo = Paths.get(uploadDirectory, nombreArchivo);
+            Path rutaArchivo = obtenerRutaArchivo(archivo.getUrl());
+            if (rutaArchivo != null) {
                 Files.deleteIfExists(rutaArchivo);
             }
             
@@ -88,7 +89,8 @@ public class StorageService {
         return Paths.get(uploadDirectory, nombreArchivo);
     }
 
-    private String obtenerExtension(String nombreArchivo) {
+    public String obtenerExtension(String nombreArchivo) {
+        if (nombreArchivo == null) return "";
         int puntoIndex = nombreArchivo.lastIndexOf('.');
         if (puntoIndex > 0) {
             return nombreArchivo.substring(puntoIndex);

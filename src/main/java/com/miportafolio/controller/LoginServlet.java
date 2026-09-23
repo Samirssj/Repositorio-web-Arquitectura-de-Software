@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            request.setAttribute("error", "Irekado amin dagiti porma.");
+            request.setAttribute("error", "Todos los campos son obligatorios.");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
             return;
         }
@@ -50,10 +50,10 @@ public class LoginServlet extends HttpServlet {
 
         if (usuarioAutenticado != null) {
             HttpSession session = request.getSession(true);
-            session.setAttribute("usuario", usuarioAutenticado);
+            session.setAttribute("usuario", usuarioAutenticado); // Crítico: La clave debe ser "usuario"
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         } else {
-            request.setAttribute("error", "Maikontra ti email wenno password. Padasem manen.");
+            request.setAttribute("error", "Conflicto con el correo electrónico o la contraseña. Inténtalo de nuevo.");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }

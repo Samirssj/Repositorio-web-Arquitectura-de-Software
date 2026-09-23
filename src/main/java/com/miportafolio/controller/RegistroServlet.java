@@ -26,28 +26,28 @@ public class RegistroServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String nombre = request.getParameter("nombre");
-        String rol = request.getParameter("rol");
         
-        if (email == null || email.isEmpty() || password == null || password.isEmpty() 
-                || nombre == null || nombre.isEmpty()) {
-            request.setAttribute("error", "Todos los campos son obligatorios");
+        // Validar que ningún campo sea nulo o esté en blanco
+        if (email == null || email.trim().isEmpty() || 
+            password == null || password.trim().isEmpty() || 
+            nombre == null || nombre.trim().isEmpty()) {
+            request.setAttribute("error", "Todos los campos son obligatorios.");
             request.getRequestDispatcher("/registro.jsp").forward(request, response);
             return;
         }
         
-        if (rol == null || rol.isEmpty()) {
-            rol = "usuario"; // Rol por defecto
-        }
-        
-        boolean registrado = authService.registrar(email, password, nombre, rol);
+        // Invocar registro con rol "usuario" (el sistema asignará admin automáticamente)
+        boolean registrado = authService.registrar(email, password, nombre, "usuario");
         
         if (registrado) {
-            response.sendRedirect("login?registro=exitoso");
+            response.sendRedirect("login.jsp?registroExitoso=true");
         } else {
-            request.setAttribute("error", "El email ya está registrado");
+            request.setAttribute("error", "El correo electrónico ya se encuentra registrado.");
             request.getRequestDispatcher("/registro.jsp").forward(request, response);
         }
     }

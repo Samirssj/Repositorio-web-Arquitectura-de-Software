@@ -163,7 +163,8 @@
                                 <td style="padding: 10px;"><strong>Semana <%= arch.getSemana() %></strong></td>
                                 <td style="padding: 10px;"><span style="color: var(--blue); font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
                                 <td style="padding: 10px;">
-                                    <a href="archivos?action=eliminar&id=<%= arch.getId() %>" style="color: var(--red); font-weight: 700;" onclick="return confirm('¿Eliminar archivo?');">Eliminar</a>
+                                    <a href="${pageContext.request.contextPath}/archivos?action=ver&id=<%= arch.getId() %>" style="color: var(--blue); font-weight: 700; margin-right: 12px;">Ver</a>
+                                    <a href="${pageContext.request.contextPath}/archivos?action=eliminar&id=<%= arch.getId() %>" style="color: var(--red); font-weight: 700;" onclick="return confirm('¿Eliminar archivo?');">Eliminar</a>
                                 </td>
                             </tr>
                             <%

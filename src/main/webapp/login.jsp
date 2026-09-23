@@ -104,6 +104,12 @@
             </div>
         <% } %>
 
+        <% if ("true".equals(request.getParameter("registroExitoso")) || "exitoso".equals(request.getParameter("registro"))) { %>
+            <div class="alert alert-success" style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; margin-bottom: 20px; padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+                ¡Cuenta registrada exitosamente! Ya puedes iniciar sesión con tus credenciales.
+            </div>
+        <% } %>
+
         <form action="${pageContext.request.contextPath}/login" method="POST">
             <div class="form-group">
                 <label for="email">Correo electrónico</label>
@@ -116,7 +122,10 @@
             <button type="submit" class="btn btn-primary">Iniciar sesión</button>
         </form>
 
-        <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 16px;">
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+                ¿No tienes una cuenta? <a href="registro.jsp" style="color: var(--blue); font-weight: 700; text-decoration: none;">Regístrate aquí</a>
+            </p>
             <a href="index.jsp" class="back-link">← Volver al inicio</a>
         </div>
     </div>

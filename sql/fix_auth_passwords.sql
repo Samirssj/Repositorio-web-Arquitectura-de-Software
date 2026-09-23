@@ -9,7 +9,7 @@ BEGIN;
 -- Actualizar contraseña del usuario de prueba con hash $2b$ (compatible con Java)
 UPDATE public.usuarios
 SET 
-    password = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', -- Hash para: samir_1717ssj
+    password = '$2a$12$ftAvaaYvDmYbagENYbnBn.okvEsa2i0Kc3uTg2WCPyqMygGC.JPfa', -- Hash para: samir_1717ssj
     updated_at = now()
 WHERE lower(trim(email)) = lower(trim('samircenfe17@gmail.com'));
 

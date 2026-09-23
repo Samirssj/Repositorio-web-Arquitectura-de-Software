@@ -24,27 +24,60 @@ public class DescargarArchivoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        Long id = Long.parseLong(request.getParameter("id"));
-        
-        Archivo archivo = storageService.obtenerArchivo(id);
-        
-        if (archivo != null) {
-            Path rutaArchivo = storageService.obtenerRutaArchivo(archivo.getUrl());
+        String idParam = request.getParameter("id");
+        if (idParam == null || idParam.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de archivo no proporcionado.");
+            return;
+        }
+
+        try {
+            Long id = Long.parseLong(idParam.trim());
+            Archivo archivo = storageService.obtenerArchivo(id);
             
-            if (Files.exists(rutaArchivo)) {
-                response.setContentType("application/octet-stream");
-                response.setHeader("Content-Disposition", 
-                    "attachment; filename=\"" + archivo.getNombre() + "\"");
+            if (archivo != null) {
+                Path rutaArchivo = storageService.obtenerRutaArchivo(archivo.getUrl());
                 
-                try (OutputStream out = response.getOutputStream()) {
-                    Files.copy(rutaArchivo, out);
-                    out.flush();
+                if (rutaArchivo != null && Files.exists(rutaArchivo)) {
+                    String mimeType = getServletContext().getMimeType(archivo.getNombre());
+                    if (mimeType == null) {
+                        if ("pdf".equalsIgnoreCase(archivo.getTipo())) {
+                            mimeType = "application/pdf";
+                        } else if ("imagen".equalsIgnoreCase(archivo.getTipo())) {
+                            mimeType = "image/jpeg";
+                        } else {
+                            mimeType = "application/octet-stream";
+                        }
+                    }
+                    response.setContentType(mimeType);
+                    
+                    // Si se solicita expresamente descargar o no es visualizable inline
+                    String modo = request.getParameter("modo");
+                    String disposition = "inline";
+                    if ("descargar".equalsIgnoreCase(modo)) {
+                        disposition = "attachment";
+                    } else if (!mimeType.startsWith("image/") && !mimeType.equals("application/pdf")) {
+                        disposition = "attachment";
+                    }
+
+                    response.setHeader("Content-Disposition", 
+                        disposition + "; filename=\"" + archivo.getNombre().replace("\"", "") + "\"");
+                    response.setContentLengthLong(Files.size(rutaArchivo));
+                    
+                    try (OutputStream out = response.getOutputStream()) {
+                        Files.copy(rutaArchivo, out);
+                        out.flush();
+                    }
+                    return;
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "El archivo físico no se encuentra disponible en el servidor.");
+                    return;
                 }
             } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo no encontrado");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Registro de archivo no encontrado.");
+                return;
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo no encontrado");
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Identificador de archivo inválido.");
         }
     }
 }

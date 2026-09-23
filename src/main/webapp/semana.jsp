@@ -107,7 +107,7 @@
                                 <span class="section-label"><%= recurso.getTipo().toUpperCase() %></span>
                                 <h3 style="margin-top: 4px;"><%= recurso.getNombre() %></h3>
                             </div>
-                            <a href="<%= recurso.getUrl() %>" target="_blank" class="btn btn-primary" style="font-size: 12px;">
+                            <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>" target="_blank" class="btn btn-primary" style="font-size: 12px;">
                                 Descargar / Ver recurso →
                             </a>
                         </div>
