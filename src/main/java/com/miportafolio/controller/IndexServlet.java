@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/inicio")
+@WebServlet(urlPatterns = {"/inicio", "/index"})
 public class IndexServlet extends HttpServlet {
 
     private ArchivoDAO archivoDAO;

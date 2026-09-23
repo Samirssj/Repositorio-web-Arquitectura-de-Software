@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.miportafolio.model.Archivo" %>
+<%@ page import="com.miportafolio.dao.ArchivoDAO" %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -88,20 +89,43 @@
 
         <%
             List<Archivo> proyectos = (List<Archivo>) request.getAttribute("proyectos");
+            if (proyectos == null) {
+                ArchivoDAO dao = new ArchivoDAO();
+                proyectos = dao.listarTodos();
+            }
             if (proyectos != null && !proyectos.isEmpty()) {
         %>
         <div class="project-grid">
             <%
-                int limite = Math.min(proyectos.size(), 4);
+                int limite = Math.min(proyectos.size(), 8);
                 for (int i = 0; i < limite; i++) {
                     Archivo proyecto = proyectos.get(i);
             %>
-            <article class="project-card">
-                <span class="project-type"><%= proyecto.getTipo() %></span>
-                <h3 class="project-title"><%= proyecto.getNombre() %></h3>
-                <p class="project-description">
-                    <%= proyecto.getDescripcion() != null ? proyecto.getDescripcion() : "Sin descripción disponible." %>
-                </p>
+            <article class="project-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span class="project-type" style="background: rgba(49, 94, 251, 0.15); color: var(--blue); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                            <%= proyecto.getTipo() %>
+                        </span>
+                        <span style="font-size: 11px; font-weight: 700; color: var(--muted);">
+                            Semana <%= String.format("%02d", proyecto.getSemana()) %>
+                        </span>
+                    </div>
+                    <h3 class="project-title" style="margin-bottom: 8px; font-size: 16px;"><%= proyecto.getNombre() %></h3>
+                    <p class="project-description" style="color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+                        <%= (proyecto.getDescripcion() != null && !proyecto.getDescripcion().trim().isEmpty()) 
+                                ? proyecto.getDescripcion() 
+                                : "Recurso académico disponible para consulta." %>
+                    </p>
+                </div>
+                <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center;">
+                    <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= proyecto.getId() %>" target="_blank" style="color: var(--blue); font-weight: 700; font-size: 12px; text-decoration: none;">
+                        Ver recurso →
+                    </a>
+                    <a href="${pageContext.request.contextPath}/semana?num=<%= proyecto.getSemana() %>" style="color: var(--muted); font-size: 11px; text-decoration: none;">
+                        Semana <%= proyecto.getSemana() %>
+                    </a>
+                </div>
             </article>
             <% } %>
         </div>

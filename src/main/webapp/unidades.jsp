@@ -92,7 +92,7 @@
                 <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
                     Conceptos iniciales, notación asintótica y metodologías para la resolución lógica de problemas.
                 </p>
-                <a href="${pageContext.request.contextPath}/semana.jsp?id=1" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/semana?num=1" class="btn btn-primary">
                     Ver recursos y materiales →
                 </a>
             </article>
@@ -110,7 +110,7 @@
                 <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
                     Listas enlazadas, pilas, colas y su implementación en Java EE / Jakarta EE.
                 </p>
-                <a href="${pageContext.request.contextPath}/semana.jsp?id=2" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/semana?num=2" class="btn btn-primary">
                     Ver recursos y materiales →
                 </a>
             </article>
@@ -125,7 +125,7 @@
                 <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
                     Análisis de eficiencia temporal y espacial utilizando la notación Big-O.
                 </p>
-                <a href="${pageContext.request.contextPath}/semana.jsp?id=3" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/semana?num=3" class="btn btn-primary">
                     Ver recursos y materiales →
                 </a>
             </article>
@@ -140,7 +140,7 @@
                 <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
                     Representación matricial, listas de adyacencia y algoritmos de búsqueda (BFS y DFS).
                 </p>
-                <a href="${pageContext.request.contextPath}/semana.jsp?id=4" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/semana?num=4" class="btn btn-primary">
                     Ver recursos y materiales →
                 </a>
             </article>
