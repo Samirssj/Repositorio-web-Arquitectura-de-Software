@@ -1,11 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.miportafolio.model.SilaboData" %>
+<%@ page import="com.miportafolio.model.SilaboData.UnidadInfo" %>
+<%@ page import="com.miportafolio.model.SilaboData.SemanaInfo" %>
+<%@ page import="com.miportafolio.dao.ArchivoDAO" %>
+<%
+    List<UnidadInfo> unidades = SilaboData.getUnidades();
+    ArchivoDAO archivoDAO = new ArchivoDAO();
+    Map<Integer, Integer> conteos = archivoDAO.contarArchivosPorTodasLasSemanas();
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unidades | Academia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Unidades y Semanas | Arquitectura de Software | UPLA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
         (function () {
@@ -13,6 +24,165 @@
             document.documentElement.setAttribute("data-theme", savedTheme);
         })();
     </script>
+    <style>
+        .unit-nav-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--line);
+        }
+        .unit-nav-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .unit-nav-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+        .unit-block {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-small);
+        }
+        .unit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+        .unit-title-head {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .unit-capacidad-box {
+            background: var(--surface-soft);
+            border-left: 3px solid var(--blue);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .weeks-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+        @media (max-width: 1200px) {
+            .weeks-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .weeks-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .week-item-card {
+            background: var(--surface-soft);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+        .week-item-card:hover {
+            border-color: var(--blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-small);
+        }
+        .week-number-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .resource-count-badge {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--muted);
+            border: 1px solid var(--line);
+        }
+        .resource-count-badge.has-files {
+            background: var(--blue-soft);
+            color: var(--blue);
+            border-color: var(--blue);
+            font-weight: 700;
+        }
+        .week-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 0 0 10px 0;
+            line-height: 1.35;
+        }
+        .week-desempeno {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 0 0 16px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .week-btn-enter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            background: var(--surface);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            transition: all 0.2s ease;
+            margin-top: auto;
+        }
+        .week-btn-enter:hover {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+    </style>
 </head>
 <body>
 
@@ -59,93 +229,59 @@
 </aside>
 
 <main class="page-shell">
-    <div style="margin-bottom: 28px;">
-        <span class="section-label">RUTA DE APRENDIZAJE</span>
-        <h1 class="page-title">Unidad 1 — Fundamentos</h1>
-        <p class="page-lead">
-            Introducción a los fundamentos, estructuras de datos y análisis algorítmico.
+    <div style="margin-bottom: 24px;">
+        <span class="section-label">SÍLABO OFICIAL · CÓDIGO 332181</span>
+        <h1 class="page-title" style="margin-bottom: 8px;">Arquitectura de Software</h1>
+        <p class="page-lead" style="margin-bottom: 0;">
+            Estructuración curricular en <strong>4 Unidades Temáticas</strong> y <strong>16 Semanas Académicas</strong> con sus respectivas capacidades, desempeños y materiales de clase.
         </p>
     </div>
 
-    <div class="unit-detail-layout">
-        <aside class="sidebar-weeks">
-            <h4>Semanas de Clase</h4>
-            <ul class="week-menu">
-                <li><a href="#sem1" class="active"><span>W1</span> · Introducción a Algoritmos</a></li>
-                <li><a href="#sem2"><span>W2</span> · Estructuras de Datos</a></li>
-                <li><a href="#sem3"><span>W3</span> · Complejidad Computacional</a></li>
-                <li><a href="#sem4"><span>W4</span> · Grafos y Árboles</a></li>
-            </ul>
-        </aside>
+    <!-- NAVEGACIÓN RÁPIDA POR UNIDADES -->
+    <nav class="unit-nav-bar" aria-label="Navegación de unidades">
+        <% for (UnidadInfo u : unidades) { %>
+            <a href="#unidad-<%= u.getNumeroRomano().toLowerCase() %>" class="unit-nav-btn">
+                Unidad <%= u.getNumeroRomano() %> (Semanas <%= u.getSemanas().get(0).getNumero() %> - <%= u.getSemanas().get(3).getNumero() %>)
+            </a>
+        <% } %>
+    </nav>
 
-        <section class="weeks-content">
-            <article class="week-content-card" id="sem1">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <span class="section-label">SEMANA 01</span>
-                        <h3>Introducción a Algoritmos</h3>
-                    </div>
-                    <span style="background: var(--blue-soft); color: var(--blue); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
-                        Completado
-                    </span>
-                </div>
-                <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
-                    Conceptos iniciales, notación asintótica y metodologías para la resolución lógica de problemas.
-                </p>
-                <a href="${pageContext.request.contextPath}/semana?num=1" class="btn btn-primary">
-                    Ver recursos y materiales →
-                </a>
-            </article>
+    <!-- RENDERIZADO DE LAS 4 UNIDADES (4 SEMANAS CADA UNA = 16 SEMANAS) -->
+    <% for (UnidadInfo u : unidades) { %>
+        <section class="unit-block" id="unidad-<%= u.getNumeroRomano().toLowerCase() %>">
+            <span class="unit-badge">UNIDAD <%= u.getNumeroRomano() %></span>
+            <h2 class="unit-title-head"><%= u.getTitulo() %></h2>
+            
+            <div class="unit-capacidad-box">
+                <strong style="color: var(--ink);">Capacidad / Competencia:</strong><br>
+                <%= u.getCapacidad() %>
+            </div>
 
-            <article class="week-content-card" id="sem2">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <span class="section-label">SEMANA 02</span>
-                        <h3>Estructuras de Datos Fundamental</h3>
-                    </div>
-                    <span style="background: var(--blue-soft); color: var(--blue); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
-                        Completado
-                    </span>
-                </div>
-                <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
-                    Listas enlazadas, pilas, colas y su implementación en Java EE / Jakarta EE.
-                </p>
-                <a href="${pageContext.request.contextPath}/semana?num=2" class="btn btn-primary">
-                    Ver recursos y materiales →
-                </a>
-            </article>
-
-            <article class="week-content-card" id="sem3">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <span class="section-label">SEMANA 03</span>
-                        <h3>Complejidad Computacional</h3>
-                    </div>
-                </div>
-                <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
-                    Análisis de eficiencia temporal y espacial utilizando la notación Big-O.
-                </p>
-                <a href="${pageContext.request.contextPath}/semana?num=3" class="btn btn-primary">
-                    Ver recursos y materiales →
-                </a>
-            </article>
-
-            <article class="week-content-card" id="sem4">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <span class="section-label">SEMANA 04</span>
-                        <h3>Grafos y Árboles</h3>
-                    </div>
-                </div>
-                <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">
-                    Representación matricial, listas de adyacencia y algoritmos de búsqueda (BFS y DFS).
-                </p>
-                <a href="${pageContext.request.contextPath}/semana?num=4" class="btn btn-primary">
-                    Ver recursos y materiales →
-                </a>
-            </article>
+            <!-- CUADRÍCULA DE LAS 4 SEMANAS DE ESTA UNIDAD -->
+            <div class="weeks-cards-grid">
+                <% for (SemanaInfo s : u.getSemanas()) { 
+                    int cant = conteos.getOrDefault(s.getNumero(), 0);
+                    boolean tieneArchivos = cant > 0;
+                %>
+                    <article class="week-item-card">
+                        <div>
+                            <div class="week-number-tag">
+                                <span>SEMANA <%= String.format("%02d", s.getNumero()) %></span>
+                                <span class="resource-count-badge <%= tieneArchivos ? "has-files" : "" %>">
+                                    <%= cant %> <%= (cant == 1) ? "recurso" : "recursos" %>
+                                </span>
+                            </div>
+                            <h3 class="week-title"><%= s.getTitulo() %></h3>
+                            <p class="week-desempeno" title="<%= s.getDesempeno() %>"><%= s.getDesempeno() %></p>
+                        </div>
+                        <a href="${pageContext.request.contextPath}/semana?num=<%= s.getNumero() %>" class="week-btn-enter">
+                            Ver trabajos y sesión →
+                        </a>
+                    </article>
+                <% } %>
+            </div>
         </section>
-    </div>
+    <% } %>
 </main>
 
 <footer class="site-footer">

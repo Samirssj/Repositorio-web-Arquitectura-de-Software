@@ -145,6 +145,21 @@ public class ArchivoDAO {
         }
         return false;
     }
+
+    public java.util.Map<Integer, Integer> contarArchivosPorTodasLasSemanas() {
+        String sql = "SELECT semana, COUNT(*) FROM archivos GROUP BY semana";
+        java.util.Map<Integer, Integer> conteo = new java.util.HashMap<>();
+        try (Connection conn = DatabaseConfig.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                conteo.put(rs.getInt(1), rs.getInt(2));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conteo;
+    }
     
     private Archivo mapearArchivo(ResultSet rs) throws SQLException {
         Archivo archivo = new Archivo();

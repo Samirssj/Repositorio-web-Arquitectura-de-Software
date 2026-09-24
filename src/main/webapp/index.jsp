@@ -1,15 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.miportafolio.model.Archivo" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.miportafolio.model.SilaboData" %>
+<%@ page import="com.miportafolio.model.SilaboData.UnidadInfo" %>
+<%@ page import="com.miportafolio.model.SilaboData.SemanaInfo" %>
 <%@ page import="com.miportafolio.dao.ArchivoDAO" %>
-
+<%
+    List<UnidadInfo> unidades = SilaboData.getUnidades();
+    ArchivoDAO archivoDAO = new ArchivoDAO();
+    Map<Integer, Integer> conteos = archivoDAO.contarArchivosPorTodasLasSemanas();
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia | Repositorio de Software</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
         (function () {
@@ -78,63 +85,49 @@
         </div>
     </section>
 
+    <!-- SECCIÓN DE UNIDADES: ESTRUCTURA EXACTA DE LA IMAGEN CON PROGRESO DINÁMICO -->
     <section class="projects-section">
         <div class="section-heading">
             <div>
-                <span class="section-label">PORTAFOLIO</span>
-                <h2>Proyectos destacados</h2>
+                <span class="section-label">RUTA DE APRENDIZAJE</span>
+                <h2>Unidades del Curso</h2>
             </div>
-            <a href="unidades.jsp" class="section-link">Ver todo →</a>
+            <a href="unidades.jsp" class="section-link">Ver todo el sílabo →</a>
         </div>
 
-        <%
-            List<Archivo> proyectos = (List<Archivo>) request.getAttribute("proyectos");
-            if (proyectos == null) {
-                ArchivoDAO dao = new ArchivoDAO();
-                proyectos = dao.listarTodos();
-            }
-            if (proyectos != null && !proyectos.isEmpty()) {
-        %>
-        <div class="project-grid">
-            <%
-                int limite = Math.min(proyectos.size(), 8);
-                for (int i = 0; i < limite; i++) {
-                    Archivo proyecto = proyectos.get(i);
+        <div class="unit-cards-grid">
+            <% for (UnidadInfo u : unidades) { 
+                int totalSemanas = u.getSemanas().size();
+                int semanasCompletadas = 0;
+                for (SemanaInfo s : u.getSemanas()) {
+                    if (conteos.getOrDefault(s.getNumero(), 0) > 0) {
+                        semanasCompletadas++;
+                    }
+                }
+                int porcentaje = (totalSemanas > 0) ? (semanasCompletadas * 100 / totalSemanas) : 0;
             %>
-            <article class="project-card" style="display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <span class="project-type" style="background: rgba(49, 94, 251, 0.15); color: var(--blue); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
-                            <%= proyecto.getTipo() %>
-                        </span>
-                        <span style="font-size: 11px; font-weight: 700; color: var(--muted);">
-                            Semana <%= String.format("%02d", proyecto.getSemana()) %>
-                        </span>
+                <a href="${pageContext.request.contextPath}/unidades.jsp#unidad-<%= u.getNumeroRomano().toLowerCase() %>" class="unit-card-item">
+                    <div>
+                        <div class="unit-card-top">
+                            <span class="unit-card-tag">UNIDAD <%= u.getNumero() %></span>
+                            <span class="unit-card-status"><%= porcentaje %>% Completado</span>
+                        </div>
+                        <h3 class="unit-card-title">Unidad <%= u.getNumero() %>: <%= u.getTitulo() %></h3>
+                        <p class="unit-card-desc"><%= u.getCapacidad() %></p>
                     </div>
-                    <h3 class="project-title" style="margin-bottom: 8px; font-size: 16px;"><%= proyecto.getNombre() %></h3>
-                    <p class="project-description" style="color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
-                        <%= (proyecto.getDescripcion() != null && !proyecto.getDescripcion().trim().isEmpty()) 
-                                ? proyecto.getDescripcion() 
-                                : "Recurso académico disponible para consulta." %>
-                    </p>
-                </div>
-                <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center;">
-                    <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= proyecto.getId() %>" target="_blank" style="color: var(--blue); font-weight: 700; font-size: 12px; text-decoration: none;">
-                        Ver recurso →
-                    </a>
-                    <a href="${pageContext.request.contextPath}/semana?num=<%= proyecto.getSemana() %>" style="color: var(--muted); font-size: 11px; text-decoration: none;">
-                        Semana <%= proyecto.getSemana() %>
-                    </a>
-                </div>
-            </article>
+
+                    <div class="unit-card-footer">
+                        <div class="unit-progress-text">
+                            <span class="unit-progress-label">Progreso de la unidad</span>
+                            <span class="unit-progress-ratio"><%= semanasCompletadas %>/<%= totalSemanas %> semanas</span>
+                        </div>
+                        <div class="unit-progress-track">
+                            <div class="unit-progress-bar" style="width: <%= porcentaje %>%;"></div>
+                        </div>
+                    </div>
+                </a>
             <% } %>
         </div>
-        <% } else { %>
-        <div class="no-projects" style="text-align: center; padding: 40px; background: var(--surface); border-radius: 12px; border: 1px dashed var(--line);">
-            <h3>Aún no hay proyectos publicados</h3>
-            <p style="color: var(--muted);">Los archivos subidos desde la administración aparecerán aquí.</p>
-        </div>
-        <% } %>
     </section>
 </main>
 
@@ -162,11 +155,5 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/js/theme.js"></script>
-<!-- CDN Oficial del Cliente JS de Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-client@2"></script>
-
-<!-- Tus archivos de configuración y lógica -->
-<script src="${pageContext.request.contextPath}/js/config.js"></script>
-<script src="${pageContext.request.contextPath}/js/app.js"></script>
 </body>
 </html>

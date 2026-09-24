@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.miportafolio.model.Archivo" %>
 <%@ page import="com.miportafolio.dao.ArchivoDAO" %>
+<%@ page import="com.miportafolio.model.SilaboData" %>
+<%@ page import="com.miportafolio.model.SilaboData.UnidadInfo" %>
+<%@ page import="com.miportafolio.model.SilaboData.SemanaInfo" %>
 <%
     Integer numeroSemana = (Integer) request.getAttribute("numeroSemana");
     if (numeroSemana == null) {
@@ -10,20 +13,22 @@
     }
 
     List<Archivo> recursos = (List<Archivo>) request.getAttribute("recursos");
-    
-    // Respaldo: si recursos viene nulo (porque se accedió al JSP directo), consulta la BD
     if (recursos == null) {
         ArchivoDAO dao = new ArchivoDAO();
         recursos = dao.obtenerArchivosPorSemana(numeroSemana);
     }
+
+    SemanaInfo infoSemana = SilaboData.getSemana(numeroSemana);
+    UnidadInfo infoUnidad = SilaboData.getUnidadDeSemana(numeroSemana);
+    List<UnidadInfo> todasUnidades = SilaboData.getUnidades();
 %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semana <%= String.format("%02d", numeroSemana) %> | Academia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Semana <%= String.format("%02d", numeroSemana) %> | <%= infoSemana.getTitulo() %> | UPLA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
         (function () {
@@ -31,6 +36,41 @@
             document.documentElement.setAttribute("data-theme", savedTheme);
         })();
     </script>
+    <style>
+        .sidebar-unit-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            padding: 4px 8px;
+            background: var(--blue-soft);
+            border-radius: 6px;
+        }
+        .week-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--ink);
+            transition: all 0.2s;
+        }
+        .week-menu li a:hover {
+            background: var(--surface-soft);
+            color: var(--blue);
+        }
+        .week-menu li a.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 700;
+            border-left: 3px solid var(--blue);
+        }
+    </style>
 </head>
 <body>
 
@@ -77,56 +117,143 @@
 </aside>
 
 <main class="page-shell">
-    <div style="margin-bottom: 24px;">
-        <span class="section-label">RECURSOS ACADÉMICOS</span>
-        <h1 class="page-title">Semana <%= String.format("%02d", numeroSemana) %></h1>
-    </div>
+    <div class="unit-detail-layout" style="align-items: flex-start; gap: 28px;">
+        
+        <!-- BARRA LATERAL: 4 UNIDADES DEL SÍLABO -->
+        <aside class="sidebar-weeks" style="width: 290px; flex-shrink: 0; background: var(--surface); padding: 18px; border-radius: 12px; border: 1px solid var(--line);">
+            <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line);">
+                <span class="section-label" style="font-size: 10px;">SÍLABO 2026-I</span>
+                <h4 style="margin: 4px 0 0; font-size: 14px;">4 Unidades · 16 Semanas</h4>
+            </div>
 
-    <div class="unit-detail-layout">
-        <!-- BARRA LATERAL DE NAVEGACIÓN ENTRE SEMANAS -->
-        <aside class="sidebar-weeks">
-            <h4>Semanas de Clase</h4>
-            <ul class="week-menu">
-                <% for (int i = 1; i <= 4; i++) { %>
-                    <li>
-                        <a href="semana?num=<%= i %>" class="<%= (i == numeroSemana) ? "active" : "" %>">
-                            <span>W<%= i %></span> · Semana <%= String.format("%02d", i) %>
-                        </a>
-                    </li>
+            <div style="max-height: 720px; overflow-y: auto; padding-right: 4px;">
+                <% for (UnidadInfo u : todasUnidades) { %>
+                    <div class="sidebar-unit-title">
+                        UNIDAD <%= u.getNumeroRomano() %> (SEM. <%= u.getSemanas().get(0).getNumero() %> - <%= u.getSemanas().get(3).getNumero() %>)
+                    </div>
+                    <ul class="week-menu" style="list-style: none; padding: 0; margin: 0 0 10px 0;">
+                        <% for (SemanaInfo s : u.getSemanas()) { 
+                            boolean esActiva = (s.getNumero() == numeroSemana);
+                            String claseActiva = esActiva ? "active" : "";
+                        %>
+                            <li style="margin-bottom: 3px;">
+                                <a href="semana?num=<%= s.getNumero() %>" class="<%= claseActiva %>" title="<%= s.getTitulo() %>">
+                                    <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px;">W<%= String.format("%02d", s.getNumero()) %></span>
+                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= s.getTitulo() %></span>
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
                 <% } %>
-            </ul>
+            </div>
         </aside>
 
-        <!-- CONTENIDO DINÁMICO DESDE LA BASE DE DATOS -->
-        <section class="weeks-content">
-            <% if (recursos != null && !recursos.isEmpty()) { 
-                for (Archivo recurso : recursos) { %>
-                    <article class="week-content-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;">
-                            <div>
-                                <span class="section-label"><%= recurso.getTipo().toUpperCase() %></span>
-                                <h3 style="margin-top: 4px;"><%= recurso.getNombre() %></h3>
+        <!-- SECCIÓN PRINCIPAL: ESTRUCTURA SEGÚN DISEÑO SOLICITADO, CON ESTILO NATIVO -->
+        <section class="weeks-content" style="flex: 1; min-width: 0;">
+            <div class="attachment-header">
+                <div class="session-date-badge">
+                    <span>📅</span> 2026-09-20
+                </div>
+
+                <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 10px 0; color: var(--ink);">
+                    <% if (numeroSemana == 1) { %>
+                        Infografias Session01
+                    <% } else { %>
+                        Semana <%= String.format("%02d", numeroSemana) %>: <%= infoSemana.getTitulo() %>
+                    <% } %>
+                </h1>
+
+                <p style="color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 0 20px 0; max-width: 800px;">
+                    <% if (numeroSemana == 1) { %>
+                        Elaborar infografias de arquitectura de software, estándares y atributos de calidad, de los puntos del 1-7 de la Sesion01_ArquitecturaSw_2026.
+                    <% } else { %>
+                        <%= infoSemana.getDesempeno() %>
+                    <% } %>
+                </p>
+
+                <div class="attachment-subtitle">
+                    <span style="font-size: 15px;">📎</span> ARCHIVOS ADJUNTOS
+                </div>
+            </div>
+
+            <!-- CUADRÍCULA DE TARJETAS EN 4 COLUMNAS (ESTRUCTURA DE LA CAPTURA) -->
+            <% if (recursos != null && !recursos.isEmpty()) { %>
+                <div class="attachment-grid">
+                    <% for (Archivo recurso : recursos) { %>
+                        <article class="attachment-card">
+                            <div class="attachment-thumb" onclick="abrirVisor('${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>', '<%= recurso.getNombre().replace("'", "\\'") %>', '<%= recurso.getTipo() %>')" title="Clic para ampliar <%= recurso.getNombre() %>">
+                                <% if ("imagen".equalsIgnoreCase(recurso.getTipo())) { %>
+                                    <img src="${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>" alt="<%= recurso.getNombre() %>" loading="lazy">
+                                <% } else if ("pdf".equalsIgnoreCase(recurso.getTipo())) { %>
+                                    <div style="text-align: center; color: #ef4444; padding: 16px;">
+                                        <div style="font-size: 36px; margin-bottom: 4px;">📄</div>
+                                        <span style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase;">DOCUMENTO PDF</span>
+                                    </div>
+                                <% } else { %>
+                                    <div style="text-align: center; color: var(--blue); padding: 16px;">
+                                        <div style="font-size: 36px; margin-bottom: 4px;">📝</div>
+                                        <span style="font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase;">ARCHIVO DE CÓDIGO</span>
+                                    </div>
+                                <% } %>
                             </div>
-                            <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>" target="_blank" class="btn btn-primary" style="font-size: 12px;">
-                                Descargar / Ver recurso →
-                            </a>
-                        </div>
-                        <p style="color: var(--muted); font-size: 13px;">
-                            <%= recurso.getDescripcion() != null ? recurso.getDescripcion() : "Sin descripción disponible." %>
-                        </p>
-                    </article>
-            <%   } 
-               } else { %>
-                    <article class="week-content-card" style="text-align: center; padding: 40px;">
-                        <h3>No hay materiales cargados para esta semana</h3>
-                        <p style="color: var(--muted); margin-top: 8px;">
-                            Los recursos subidos desde el <a href="dashboard.jsp" style="color: var(--blue); font-weight: 700;">panel de administración</a> aparecerán aquí.
-                        </p>
-                    </article>
+
+                            <h3 class="attachment-title"><%= recurso.getNombre() %></h3>
+
+                            <div class="attachment-actions">
+                                <button type="button" class="btn-view" onclick="abrirVisor('${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>', '<%= recurso.getNombre().replace("'", "\\'") %>', '<%= recurso.getTipo() %>')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Ver
+                                </button>
+                                <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>&modo=descargar" class="btn-download">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Descargar
+                                </a>
+                            </div>
+                        </article>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="attachment-card" style="text-align: center; padding: 48px 24px;">
+                    <div style="font-size: 42px; margin-bottom: 12px;">📁</div>
+                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--ink);">No hay archivos cargados para esta semana</h3>
+                    <p style="color: var(--muted); font-size: 13px; max-width: 500px; margin: 0 auto 20px;">
+                        Los materiales de la <strong><%= infoSemana.getTitulo() %></strong> que subas desde el panel de administración aparecerán organizados aquí con este mismo formato.
+                    </p>
+                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="btn btn-primary" style="font-size: 13px; display: inline-block;">
+                        Subir recursos a Semana <%= String.format("%02d", numeroSemana) %> →
+                    </a>
+                </div>
             <% } %>
         </section>
     </div>
 </main>
+
+<!-- MODAL / LIGHTBOX PARA VISUALIZAR EN ALTA DEFINICIÓN (DISEÑO LIMPIO) -->
+<div id="mediaModal" class="media-modal" onclick="cerrarVisor(event)">
+    <div class="media-modal-card" onclick="event.stopPropagation()">
+        <button class="media-modal-close" onclick="cerrarVisor()" title="Cerrar (Esc)">✕</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">
+            <h4 id="modalTitle" style="color: var(--ink); margin: 0; font-size: 16px; font-weight: 700;"></h4>
+            <span style="font-size: 12px; color: var(--muted); font-weight: 600;">Semana <%= String.format("%02d", numeroSemana) %></span>
+        </div>
+        <div id="modalBody" style="text-align: center; overflow: auto; max-height: 75vh; display: flex; align-items: center; justify-content: center; background: var(--surface-soft); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+            <!-- Contenido dinámico (imagen o visor) -->
+        </div>
+        <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--muted); font-size: 12px;">Presiona ESC o haz clic fuera para cerrar</span>
+            <a id="modalDownloadBtn" href="#" class="btn-download" style="padding: 8px 16px;">
+                📥 Descargar archivo
+            </a>
+        </div>
+    </div>
+</div>
 
 <footer class="site-footer">
     <div class="site-footer-inner">
@@ -152,5 +279,56 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/js/theme.js"></script>
+<script>
+    const modal = document.getElementById('mediaModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+    function abrirVisor(url, titulo, tipo) {
+        modalTitle.textContent = titulo;
+        modalDownloadBtn.href = url + '&modo=descargar';
+        modalBody.innerHTML = '';
+
+        if (tipo === 'imagen' || url.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = titulo;
+            img.className = 'media-modal-img';
+            modalBody.appendChild(img);
+        } else if (tipo === 'pdf') {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.style.width = '85vw';
+            iframe.style.height = '70vh';
+            iframe.style.border = 'none';
+            modalBody.appendChild(iframe);
+        } else {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.style.width = '85vw';
+            iframe.style.height = '60vh';
+            iframe.style.border = 'none';
+            modalBody.appendChild(iframe);
+        }
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarVisor(e) {
+        if (!e || e.target === modal || e.target.classList.contains('media-modal-close')) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            modalBody.innerHTML = '';
+        }
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            cerrarVisor();
+        }
+    });
+</script>
 </body>
 </html>

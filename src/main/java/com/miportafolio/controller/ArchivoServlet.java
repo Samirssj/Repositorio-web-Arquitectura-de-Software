@@ -64,7 +64,12 @@ public class ArchivoServlet extends HttpServlet {
         }
         
         // Por defecto: Listar archivos y redirigir al panel de administración
-        List<Archivo> archivos = storageService.listarArchivosPorUsuario(usuario.getId());
+        List<Archivo> archivos;
+        if ("admin".equalsIgnoreCase(usuario.getRol())) {
+            archivos = storageService.listarTodosArchivos();
+        } else {
+            archivos = storageService.listarArchivosPorUsuario(usuario.getId());
+        }
         request.setAttribute("archivos", archivos);
         request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
     }
