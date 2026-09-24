@@ -182,17 +182,31 @@
                     <% for (Archivo recurso : recursos) { %>
                         <article class="attachment-card">
                             <div class="attachment-thumb" onclick="abrirVisor('${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>', '<%= recurso.getNombre().replace("'", "\\'") %>', '<%= recurso.getTipo() %>')" title="Clic para ampliar <%= recurso.getNombre() %>">
-                                <% if ("imagen".equalsIgnoreCase(recurso.getTipo())) { %>
+                                <% 
+                                    String urlLower = (recurso.getUrl() != null) ? recurso.getUrl().toLowerCase() : "";
+                                    String nomLower = (recurso.getNombre() != null) ? recurso.getNombre().toLowerCase() : "";
+                                    if ("imagen".equalsIgnoreCase(recurso.getTipo())) { 
+                                %>
                                     <img src="${pageContext.request.contextPath}/descargar-archivo?id=<%= recurso.getId() %>" alt="<%= recurso.getNombre() %>" loading="lazy">
-                                <% } else if ("pdf".equalsIgnoreCase(recurso.getTipo())) { %>
+                                <% } else if ("pdf".equalsIgnoreCase(recurso.getTipo()) || urlLower.endsWith(".pdf") || nomLower.contains("pdf")) { %>
                                     <div style="text-align: center; color: #ef4444; padding: 16px;">
-                                        <div style="font-size: 36px; margin-bottom: 4px;">📄</div>
+                                        <div style="font-size: 38px; margin-bottom: 4px;">📄</div>
                                         <span style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase;">DOCUMENTO PDF</span>
+                                    </div>
+                                <% } else if (urlLower.endsWith(".doc") || urlLower.endsWith(".docx") || nomLower.contains("word") || nomLower.contains("informe")) { %>
+                                    <div style="text-align: center; color: #2563eb; padding: 16px;">
+                                        <div style="font-size: 38px; margin-bottom: 4px;">📘</div>
+                                        <span style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase;">DOCUMENTO WORD</span>
+                                    </div>
+                                <% } else if (urlLower.endsWith(".zip") || urlLower.endsWith(".rar") || urlLower.endsWith(".7z")) { %>
+                                    <div style="text-align: center; color: #eab308; padding: 16px;">
+                                        <div style="font-size: 38px; margin-bottom: 4px;">📦</div>
+                                        <span style="font-size: 11px; font-weight: 700; color: #eab308; text-transform: uppercase;">PAQUETE COMPRIMIDO</span>
                                     </div>
                                 <% } else { %>
                                     <div style="text-align: center; color: var(--blue); padding: 16px;">
-                                        <div style="font-size: 36px; margin-bottom: 4px;">📝</div>
-                                        <span style="font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase;">ARCHIVO DE CÓDIGO</span>
+                                        <div style="font-size: 38px; margin-bottom: 4px;">📝</div>
+                                        <span style="font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase;">DOCUMENTO ADJUNTO</span>
                                     </div>
                                 <% } %>
                             </div>
@@ -290,13 +304,13 @@
         modalDownloadBtn.href = url + '&modo=descargar';
         modalBody.innerHTML = '';
 
-        if (tipo === 'imagen' || url.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+        if (tipo === 'imagen' || url.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
             const img = document.createElement('img');
             img.src = url;
             img.alt = titulo;
             img.className = 'media-modal-img';
             modalBody.appendChild(img);
-        } else if (tipo === 'pdf') {
+        } else if (tipo === 'pdf' || url.toLowerCase().includes('.pdf')) {
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.style.width = '85vw';
@@ -304,12 +318,19 @@
             iframe.style.border = 'none';
             modalBody.appendChild(iframe);
         } else {
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.style.width = '85vw';
-            iframe.style.height = '60vh';
-            iframe.style.border = 'none';
-            modalBody.appendChild(iframe);
+            const container = document.createElement('div');
+            container.style.cssText = 'padding: 40px 20px; text-align: center; max-width: 500px; margin: 0 auto;';
+            container.innerHTML = `
+                <div style="font-size: 52px; margin-bottom: 14px;">📘</div>
+                <h3 style="margin-bottom: 8px; color: var(--ink); font-size: 18px;">\${titulo}</h3>
+                <p style="color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0 0 24px 0;">
+                    Este recurso está listo para ser descargado y consultado directamente en tu computadora.
+                </p>
+                <a href="\${url}&modo=descargar" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; font-size: 14px; text-decoration: none;">
+                    📥 Descargar Archivo Completo
+                </a>
+            `;
+            modalBody.appendChild(container);
         }
 
         modal.classList.add('active');

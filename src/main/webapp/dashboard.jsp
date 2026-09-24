@@ -16,6 +16,12 @@
         StorageService service = new StorageService();
         archivos = service.listarTodosArchivos();
     }
+
+    String paramSem = request.getParameter("semana");
+    int defaultSem = 3;
+    if (paramSem != null && !paramSem.trim().isEmpty()) {
+        try { defaultSem = Integer.parseInt(paramSem.trim()); } catch (Exception ignored) {}
+    }
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -134,36 +140,102 @@
                     </div>
 
                     <!-- SELECCIÓN DE CUALQUIER SEMANA: 1 A 16 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                         <div class="form-group">
                             <label style="display: block; font-weight: 700; margin-bottom: 4px;">Semana Académica Asignada</label>
                             <select name="semana" id="semanaSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
                                 <% for (int i = 1; i <= 16; i++) { %>
-                                    <option value="<%= i %>">Semana <%= String.format("%02d", i) %></option>
+                                    <option value="<%= i %>" <%= (i == defaultSem ? "selected" : "") %>>Semana <%= String.format("%02d", i) %></option>
                                 <% } %>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label style="display: block; font-weight: 700; margin-bottom: 4px;">Categoría</label>
-                            <select name="tipo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
-                                <option value="auto">Detección automática por extensión</option>
-                                <option value="imagen">Imagen / Diagrama (PNG, JPG, SVG)</option>
-                                <option value="pdf">Documento PDF</option>
-                                <option value="documento">Documento Word / Código / ZIP</option>
-                            </select>
+                            <label style="display: block; font-weight: 700; margin-bottom: 4px;">Modo de Carga</label>
+                            <div style="padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-size: 13px; font-weight: 600;">
+                                ✨ Carga simultánea múltiple (Imagen + Documento)
+                            </div>
                         </div>
                     </div>
 
-                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click();" style="cursor: pointer; border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
-                        <div class="drop-zone-icon" style="font-size: 36px; margin-bottom: 8px;">📁</div>
-                        <p id="dropZoneTitle" style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">Arrastra una imagen y/o un documento aquí, o haz clic para examinar</p>
-                        <p style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">Puedes seleccionar imágenes (PNG, JPG) y documentos (PDF, DOCX) a la vez</p>
-                        <div id="fileListPreview" style="margin-top: 12px; display: none; text-align: left; background: var(--surface); padding: 12px; border-radius: 8px; border: 1px solid var(--line); font-size: 12px;"></div>
-                        <input type="file" id="fileInput" name="archivos" multiple style="display: none;">
+                    <!-- CASILLAS DUALES INDEPENDIENTES PARA IMAGEN Y DOCUMENTO -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                        
+                        <!-- CASILLA 1: IMAGEN / INFOGRAFÍA -->
+                        <div style="background: var(--surface-soft); border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; position: relative;" id="boxImagen">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-weight: 700; font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 6px;">
+                                    <span>🖼️</span> 1. Imagen / Infografía
+                                </span>
+                                <span style="font-size: 10px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PNG, JPG, WebP</span>
+                            </div>
+
+                            <div id="dropImagenArea" onclick="document.getElementById('inputImagen').click();" style="cursor: pointer; padding: 14px 8px; border-radius: 8px; transition: all 0.2s;">
+                                <div id="placeholderImagen">
+                                    <div style="font-size: 32px; margin-bottom: 6px;">📸</div>
+                                    <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--ink);">Elegir Imagen o Diagrama</p>
+                                    <span style="font-size: 11px; color: var(--muted);">o arrastra la imagen aquí</span>
+                                </div>
+                                <div id="previewImagen" style="display: none; align-items: center; gap: 10px; text-align: left; background: var(--surface); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);">
+                                    <img id="imgThumb" src="" alt="Vista previa" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div id="imgName" style="font-weight: 700; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink);"></div>
+                                        <div id="imgSize" style="font-size: 11px; color: var(--muted);"></div>
+                                    </div>
+                                    <button type="button" onclick="quitarImagen(event)" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer;" title="Eliminar de la selección">✕</button>
+                                </div>
+                            </div>
+                            <input type="file" id="inputImagen" name="archivo_imagen" accept="image/*,.png,.jpg,.jpeg,.webp,.svg" style="display: none;">
+                        </div>
+
+                        <!-- CASILLA 2: DOCUMENTO / INFORME TÉCNICO -->
+                        <div style="background: var(--surface-soft); border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; position: relative;" id="boxDoc">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-weight: 700; font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 6px;">
+                                    <span>📄</span> 2. Documento / Informe
+                                </span>
+                                <span style="font-size: 10px; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PDF, Word, ZIP</span>
+                            </div>
+
+                            <div id="dropDocArea" onclick="document.getElementById('inputDoc').click();" style="cursor: pointer; padding: 14px 8px; border-radius: 8px; transition: all 0.2s;">
+                                <div id="placeholderDoc">
+                                    <div style="font-size: 32px; margin-bottom: 6px;">📑</div>
+                                    <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--ink);">Elegir Documento o PDF</p>
+                                    <span style="font-size: 11px; color: var(--muted);">o arrastra el documento aquí</span>
+                                </div>
+                                <div id="previewDoc" style="display: none; align-items: center; gap: 10px; text-align: left; background: var(--surface); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);">
+                                    <div id="docIcon" style="font-size: 28px; flex-shrink: 0;">📄</div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div id="docName" style="font-weight: 700; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink);"></div>
+                                        <div id="docSize" style="font-size: 11px; color: var(--muted);"></div>
+                                    </div>
+                                    <button type="button" onclick="quitarDoc(event)" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer;" title="Eliminar de la selección">✕</button>
+                                </div>
+                            </div>
+                            <input type="file" id="inputDoc" name="archivo_documento" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.7z,.java,.py,.sql,.ppt,.pptx" style="display: none;">
+                        </div>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Guardar y Publicar Trabajo(s)</button>
+                    <!-- CASILLA 3: MÁS ARCHIVOS ADICIONALES (OPCIONAL) -->
+                    <details style="margin-bottom: 16px; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+                        <summary style="cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); outline: none;">
+                            ➕ ¿Quieres adjuntar más archivos a la misma semana? (Opcional)
+                        </summary>
+                        <div style="margin-top: 10px;">
+                            <input type="file" id="inputExtras" name="archivos_extra" multiple style="width: 100%; font-size: 13px; color: var(--ink);">
+                            <span style="font-size: 11px; color: var(--muted); display: block; margin-top: 4px;">Selecciona múltiples archivos adicionales si lo requieres.</span>
+                        </div>
+                    </details>
+
+                    <!-- RESUMEN DINÁMICO EN TIEMPO REAL -->
+                    <div id="resumenUpload" style="display: none; padding: 12px 16px; background: rgba(49, 94, 251, 0.08); border: 1px solid rgba(49, 94, 251, 0.25); border-radius: 8px; margin-bottom: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <span id="resumenTexto" style="font-size: 13px; font-weight: 700; color: var(--blue);"></span>
+                        <span style="font-size: 12px; color: var(--muted);">Listos para guardar en Supabase</span>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; font-weight: 700;">
+                        🚀 Guardar y Publicar Recursos en la Semana
+                    </button>
                 </form>
             </section>
 
@@ -332,62 +404,165 @@
 
 <script src="${pageContext.request.contextPath}/js/theme.js"></script>
 <script>
-    const fileInput = document.getElementById('fileInput');
-    const dropZone = document.getElementById('dropZone');
-    const dropZoneTitle = document.getElementById('dropZoneTitle');
-    const fileListPreview = document.getElementById('fileListPreview');
+    const inputImagen = document.getElementById('inputImagen');
+    const inputDoc = document.getElementById('inputDoc');
+    const inputExtras = document.getElementById('inputExtras');
+    const semanaSelect = document.getElementById('semanaSelect');
     const uploadForm = document.getElementById('uploadForm');
 
-    if (fileInput) {
-        fileInput.addEventListener('change', updateFileList);
+    const placeholderImagen = document.getElementById('placeholderImagen');
+    const previewImagen = document.getElementById('previewImagen');
+    const imgThumb = document.getElementById('imgThumb');
+    const imgName = document.getElementById('imgName');
+    const imgSize = document.getElementById('imgSize');
+    const boxImagen = document.getElementById('boxImagen');
+
+    const placeholderDoc = document.getElementById('placeholderDoc');
+    const previewDoc = document.getElementById('previewDoc');
+    const docIcon = document.getElementById('docIcon');
+    const docName = document.getElementById('docName');
+    const docSize = document.getElementById('docSize');
+    const boxDoc = document.getElementById('boxDoc');
+
+    const resumenUpload = document.getElementById('resumenUpload');
+    const resumenTexto = document.getElementById('resumenTexto');
+
+    function actualizarResumen() {
+        const hasImg = inputImagen.files && inputImagen.files.length > 0;
+        const hasDoc = inputDoc.files && inputDoc.files.length > 0;
+        const extrasCount = (inputExtras && inputExtras.files) ? inputExtras.files.length : 0;
+        const semVal = semanaSelect ? semanaSelect.value : "1";
+        const semPadded = String(semVal).padStart(2, '0');
+
+        const total = (hasImg ? 1 : 0) + (hasDoc ? 1 : 0) + extrasCount;
+        if (total === 0) {
+            resumenUpload.style.display = 'none';
+            return;
+        }
+
+        const partes = [];
+        if (hasImg) partes.push("1 imagen (" + inputImagen.files[0].name + ")");
+        if (hasDoc) partes.push("1 documento (" + inputDoc.files[0].name + ")");
+        if (extrasCount > 0) partes.push(extrasCount + " archivo(s) adicional(es)");
+
+        resumenTexto.textContent = "✓ " + total + " archivo(s) listo(s): " + partes.join(" + ") + " → Asignado a Semana " + semPadded;
+        resumenUpload.style.display = 'flex';
     }
 
-    if (dropZone) {
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.borderColor = 'var(--blue)';
-            dropZone.style.background = 'rgba(49, 94, 251, 0.05)';
+    if (inputImagen) {
+        inputImagen.addEventListener('change', () => {
+            if (inputImagen.files && inputImagen.files[0]) {
+                const file = inputImagen.files[0];
+                imgName.textContent = file.name;
+                imgSize.textContent = (file.size / 1024).toFixed(1) + " KB";
+                imgThumb.src = URL.createObjectURL(file);
+                placeholderImagen.style.display = 'none';
+                previewImagen.style.display = 'flex';
+                boxImagen.style.borderColor = 'var(--blue)';
+            } else {
+                quitarImagen();
+            }
+            actualizarResumen();
         });
-        dropZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            dropZone.style.borderColor = 'var(--line)';
-            dropZone.style.background = 'transparent';
+    }
+
+    function quitarImagen(e) {
+        if (e) e.stopPropagation();
+        inputImagen.value = "";
+        placeholderImagen.style.display = 'block';
+        previewImagen.style.display = 'none';
+        imgThumb.src = "";
+        boxImagen.style.borderColor = 'var(--line)';
+        actualizarResumen();
+    }
+
+    if (inputDoc) {
+        inputDoc.addEventListener('change', () => {
+            if (inputDoc.files && inputDoc.files[0]) {
+                const file = inputDoc.files[0];
+                docName.textContent = file.name;
+                docSize.textContent = (file.size / 1024).toFixed(1) + " KB";
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext === 'pdf') docIcon.textContent = '📄';
+                else if (['doc', 'docx'].includes(ext)) docIcon.textContent = '📘';
+                else if (['zip', 'rar', '7z'].includes(ext)) docIcon.textContent = '📦';
+                else docIcon.textContent = '📝';
+                placeholderDoc.style.display = 'none';
+                previewDoc.style.display = 'flex';
+                boxDoc.style.borderColor = 'var(--blue)';
+            } else {
+                quitarDoc();
+            }
+            actualizarResumen();
         });
-        dropZone.addEventListener('drop', (e) => {
+    }
+
+    function quitarDoc(e) {
+        if (e) e.stopPropagation();
+        inputDoc.value = "";
+        placeholderDoc.style.display = 'block';
+        previewDoc.style.display = 'none';
+        boxDoc.style.borderColor = 'var(--line)';
+        actualizarResumen();
+    }
+
+    if (inputExtras) {
+        inputExtras.addEventListener('change', actualizarResumen);
+    }
+    if (semanaSelect) {
+        semanaSelect.addEventListener('change', actualizarResumen);
+    }
+
+    // Drag and drop interactivo con clasificación automática
+    function setupDropBox(box, input, isImg) {
+        if (!box || !input) return;
+        box.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = 'var(--line)';
-            dropZone.style.background = 'transparent';
+            box.style.borderColor = 'var(--blue)';
+            box.style.background = 'rgba(49, 94, 251, 0.08)';
+        });
+        box.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            box.style.borderColor = 'var(--line)';
+            box.style.background = 'var(--surface-soft)';
+        });
+        box.addEventListener('drop', (e) => {
+            e.preventDefault();
+            box.style.borderColor = 'var(--line)';
+            box.style.background = 'var(--surface-soft)';
             if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                fileInput.files = e.dataTransfer.files;
-                updateFileList();
+                const files = Array.from(e.dataTransfer.files);
+                const imgFile = files.find(f => f.type.startsWith('image/') || /\.(png|jpg|jpeg|webp|svg)$/i.test(f.name));
+                const docFile = files.find(f => !f.type.startsWith('image/') && !/\.(png|jpg|jpeg|webp|svg)$/i.test(f.name));
+
+                if (imgFile && (!inputImagen.files || inputImagen.files.length === 0 || isImg)) {
+                    const dt = new DataTransfer();
+                    dt.items.add(imgFile);
+                    inputImagen.files = dt.files;
+                    inputImagen.dispatchEvent(new Event('change'));
+                }
+                if (docFile && (!inputDoc.files || inputDoc.files.length === 0 || !isImg)) {
+                    const dt = new DataTransfer();
+                    dt.items.add(docFile);
+                    inputDoc.files = dt.files;
+                    inputDoc.dispatchEvent(new Event('change'));
+                }
             }
         });
     }
 
-    function updateFileList() {
-        const files = fileInput.files;
-        if (!files || files.length === 0) {
-            dropZoneTitle.textContent = "Arrastra una imagen y/o un documento aquí, o haz clic para examinar";
-            fileListPreview.style.display = 'none';
-            fileListPreview.innerHTML = '';
-            return;
-        }
-        dropZoneTitle.innerHTML = `<strong>${files.length} archivo(s) seleccionado(s)</strong>`;
-        let html = '<div style="font-weight:700; margin-bottom:6px; color:var(--blue);">Archivos listos para subir:</div><ul style="padding-left:18px; margin:0;">';
-        for (let i = 0; i < files.length; i++) {
-            const sizeKB = (files[i].size / 1024).toFixed(1);
-            html += `<li><strong>${files[i].name}</strong> <span style="color:var(--muted);">(${sizeKB} KB)</span></li>`;
-        }
-        html += '</ul>';
-        fileListPreview.innerHTML = html;
-        fileListPreview.style.display = 'block';
-    }
+    setupDropBox(boxImagen, inputImagen, true);
+    setupDropBox(boxDoc, inputDoc, false);
 
     if (uploadForm) {
         uploadForm.addEventListener('submit', (e) => {
-            if (!fileInput.files || fileInput.files.length === 0) {
+            const hasImg = inputImagen.files && inputImagen.files.length > 0;
+            const hasDoc = inputDoc.files && inputDoc.files.length > 0;
+            const hasExtras = inputExtras.files && inputExtras.files.length > 0;
+
+            if (!hasImg && !hasDoc && !hasExtras) {
                 e.preventDefault();
-                alert('Por favor selecciona al menos un archivo para subir.');
+                alert('Por favor selecciona al menos una imagen o un documento para subir.');
             }
         });
     }

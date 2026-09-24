@@ -91,6 +91,18 @@ public class SubirArchivoServlet extends HttpServlet {
             int archivosGuardados = 0;
             boolean multipleArchivos = fileParts.size() > 1;
             
+            // Detectar si el lote contiene imágenes y documentos a la vez
+            boolean tieneImagen = false;
+            boolean tieneDocumento = false;
+            for (Part p : fileParts) {
+                String ext = obtenerExtension(p.getSubmittedFileName());
+                if (esImagen(ext)) {
+                    tieneImagen = true;
+                } else {
+                    tieneDocumento = true;
+                }
+            }
+            
             for (Part filePart : fileParts) {
                 String originalFileName = new File(filePart.getSubmittedFileName()).getName();
                 if (originalFileName.trim().isEmpty()) {
@@ -122,21 +134,29 @@ public class SubirArchivoServlet extends HttpServlet {
                     baseName = originalFileName.substring(0, dotIdx);
                 }
                 
+                // Determinar el tipo de archivo (auto por extensión o por selección)
+                String itemTipo = obtenerTipoPorExtension(originalFileName);
+                if (tipo != null && !tipo.trim().isEmpty() && !"auto".equalsIgnoreCase(tipo) && !multipleArchivos) {
+                    itemTipo = tipo;
+                }
+                
                 String itemNombre;
                 if (nombre != null && !nombre.trim().isEmpty()) {
-                    if (multipleArchivos) {
+                    if (multipleArchivos && tieneImagen && tieneDocumento) {
+                        if ("imagen".equals(itemTipo)) {
+                            itemNombre = nombre.trim() + " (Infografía)";
+                        } else if ("pdf".equals(itemTipo)) {
+                            itemNombre = nombre.trim() + " (Informe PDF)";
+                        } else {
+                            itemNombre = nombre.trim() + " (Documento)";
+                        }
+                    } else if (multipleArchivos) {
                         itemNombre = nombre.trim() + " - " + baseName;
                     } else {
                         itemNombre = nombre.trim();
                     }
                 } else {
                     itemNombre = baseName;
-                }
-                
-                // Determinar el tipo de archivo (auto por extensión o por selección)
-                String itemTipo = obtenerTipoPorExtension(originalFileName);
-                if (tipo != null && !tipo.trim().isEmpty() && !"auto".equalsIgnoreCase(tipo) && !multipleArchivos) {
-                    itemTipo = tipo;
                 }
                 
                 // Guardado persistente tanto en metadatos como en Supabase PostgreSQL (archivo_contenido)
@@ -160,7 +180,7 @@ public class SubirArchivoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/dashboard.jsp?mensaje=archivos_subidos&count=" + archivosGuardados + "&semana=" + semana);
             } else {
                 request.setAttribute("error", "Error al registrar los archivos en la base de datos.");
-                request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
+                request.getRequestDispatcher("/dashboard.jsp?semana=" + semana).forward(request, response);
             }
             
         } catch (Exception e) {
@@ -170,6 +190,19 @@ public class SubirArchivoServlet extends HttpServlet {
         }
     }
     
+    private boolean esImagen(String ext) {
+        if (ext == null) return false;
+        ext = ext.toLowerCase();
+        return ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg") || 
+               ext.equals(".webp") || ext.equals(".gif") || ext.equals(".svg");
+    }
+
+    private String obtenerExtension(String nombreArchivo) {
+        if (nombreArchivo == null) return "";
+        int dot = nombreArchivo.lastIndexOf('.');
+        return dot >= 0 ? nombreArchivo.substring(dot).toLowerCase() : "";
+    }
+
     private String obtenerTipoPorExtension(String nombreArchivo) {
         String extension = nombreArchivo.toLowerCase();
         if (extension.endsWith(".jpg") || extension.endsWith(".jpeg") || extension.endsWith(".png") || extension.endsWith(".gif") || extension.endsWith(".webp") || extension.endsWith(".svg")) {
