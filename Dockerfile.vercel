@@ -40,6 +40,7 @@ RUN printf '#!/bin/sh\n\
 PORT=${PORT:-8080}\n\
 echo "Iniciando Tomcat en puerto ${PORT}"\n\
 sed -i "s/port=\"8080\"/port=\"${PORT}\"/" /usr/local/tomcat/conf/server.xml\n\
+sed -i "s|<Valve className=\"org.apache.catalina.valves.AccessLogValve\"|<Valve className=\"org.apache.catalina.valves.RemoteIpValve\" remoteIpHeader=\"x-forwarded-for\" protocolHeader=\"x-forwarded-proto\" />\\n        <Valve className=\"org.apache.catalina.valves.AccessLogValve\"|" /usr/local/tomcat/conf/server.xml\n\
 exec catalina.sh run\n\
 ' > /usr/local/tomcat/start-vercel.sh \
 && chmod +x /usr/local/tomcat/start-vercel.sh

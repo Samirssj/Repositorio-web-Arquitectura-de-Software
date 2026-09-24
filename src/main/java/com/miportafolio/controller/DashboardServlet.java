@@ -3,6 +3,7 @@ package com.miportafolio.controller;
 import com.miportafolio.model.Archivo;
 import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
+import com.miportafolio.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -24,17 +25,22 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        Usuario usuario = SessionUtil.getUsuarioAutenticado(request);
 
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login");
+        if (usuario == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=sesion_requerida");
             return;
         }
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        List<Archivo> archivos = storageService.listarArchivosPorUsuario(usuario.getId());
+        List<Archivo> archivos;
+        if ("admin".equalsIgnoreCase(usuario.getRol())) {
+            archivos = storageService.listarTodosArchivos();
+        } else {
+            archivos = storageService.listarArchivosPorUsuario(usuario.getId());
+        }
 
         request.setAttribute("archivos", archivos);
         request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
     }
 }
+

@@ -104,6 +104,12 @@
             </div>
         <% } %>
 
+        <% if ("sesion_requerida".equals(request.getParameter("error"))) { %>
+            <div class="alert alert-error" style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #f59e0b;">
+                Tu sesión ha expirado o necesitas iniciar sesión como administrador para acceder al panel.
+            </div>
+        <% } %>
+
         <% if ("true".equals(request.getParameter("registroExitoso")) || "exitoso".equals(request.getParameter("registro"))) { %>
             <div class="alert alert-success" style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; margin-bottom: 20px; padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">
                 ¡Cuenta registrada exitosamente! Ya puedes iniciar sesión con tus credenciales.

@@ -2,12 +2,14 @@
 <%@ page import="com.miportafolio.model.Archivo" %>
 <%@ page import="com.miportafolio.model.Usuario" %>
 <%@ page import="com.miportafolio.model.SilaboData" %>
+<%@ page import="com.miportafolio.util.SessionUtil" %>
 <%
-    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion = SessionUtil.getUsuarioAutenticado(request);
     if (usuarioSesion == null || !"admin".equals(usuarioSesion.getRol())) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/login.jsp?error=sesion_requerida");
         return;
     }
+
 
     Archivo archivo = (Archivo) request.getAttribute("archivo");
     if (archivo == null) {

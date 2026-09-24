@@ -2,6 +2,7 @@ package com.miportafolio.controller;
 
 import com.miportafolio.model.Usuario;
 import com.miportafolio.service.AuthService;
+import com.miportafolio.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -21,10 +22,10 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
+        Usuario usuario = SessionUtil.getUsuarioAutenticado(request);
         
-        // No naka-loginen ti usuario, idiketan a deretso idiay dashboard
-        if (session != null && session.getAttribute("usuario") != null) {
+        // Si el usuario ya está autenticado, redirigir directo al dashboard
+        if (usuario != null) {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
             return;
         }
@@ -49,12 +50,12 @@ public class LoginServlet extends HttpServlet {
         Usuario usuarioAutenticado = authService.autenticar(email, password);
 
         if (usuarioAutenticado != null) {
-            HttpSession session = request.getSession(true);
-            session.setAttribute("usuario", usuarioAutenticado); // Crítico: La clave debe ser "usuario"
+            // Inicia sesión tanto en memoria (HttpSession) como en cookie segura (SessionUtil)
+            SessionUtil.iniciarSesion(request, response, usuarioAutenticado);
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         } else {
             request.setAttribute("error", "Conflicto con el correo electrónico o la contraseña. Inténtalo de nuevo.");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
-}
+}

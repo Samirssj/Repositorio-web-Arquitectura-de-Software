@@ -1,14 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.miportafolio.model.Archivo" %>
 <%@ page import="com.miportafolio.model.Usuario" %>
+<%@ page import="com.miportafolio.util.SessionUtil" %>
 <%
     Archivo archivo = (Archivo) request.getAttribute("archivo");
     if (archivo == null) {
         response.sendRedirect(request.getContextPath() + "/dashboard.jsp?error=archivo_no_encontrado");
         return;
     }
-    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion = SessionUtil.getUsuarioAutenticado(request);
 %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

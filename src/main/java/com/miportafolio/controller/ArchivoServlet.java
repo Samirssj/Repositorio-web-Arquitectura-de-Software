@@ -3,6 +3,7 @@ package com.miportafolio.controller;
 import com.miportafolio.model.Archivo;
 import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
+import com.miportafolio.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -23,13 +24,12 @@ public class ArchivoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login.jsp");
+        Usuario usuario = SessionUtil.getUsuarioAutenticado(request);
+        if (usuario == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=sesion_requerida");
             return;
         }
         
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
         String action = request.getParameter("action");
         
         if ("eliminar".equals(action)) {
@@ -42,7 +42,7 @@ public class ArchivoServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             }
-            response.sendRedirect("dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
             return;
         } 
         
@@ -59,7 +59,7 @@ public class ArchivoServlet extends HttpServlet {
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            response.sendRedirect("dashboard.jsp?error=archivo_no_encontrado");
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp?error=archivo_no_encontrado");
             return;
         }
         

@@ -3,12 +3,14 @@
 <%@ page import="com.miportafolio.model.Archivo" %>
 <%@ page import="com.miportafolio.model.Usuario" %>
 <%@ page import="com.miportafolio.service.StorageService" %>
+<%@ page import="com.miportafolio.util.SessionUtil" %>
 <%
-    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion = SessionUtil.getUsuarioAutenticado(request);
     if (usuarioSesion == null || !"admin".equals(usuarioSesion.getRol())) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("login.jsp?error=sesion_requerida");
         return;
     }
+
 
     // Carga de respaldo si se entra a la página directamente
     List<Archivo> archivos = (List<Archivo>) request.getAttribute("archivos");

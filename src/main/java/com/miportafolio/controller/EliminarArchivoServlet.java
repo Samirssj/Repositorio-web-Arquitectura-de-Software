@@ -1,6 +1,8 @@
 package com.miportafolio.controller;
 
+import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
+import com.miportafolio.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -20,9 +22,9 @@ public class EliminarArchivoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login");
+        Usuario usuario = SessionUtil.getUsuarioAutenticado(request);
+        if (usuario == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=sesion_requerida");
             return;
         }
         
@@ -32,13 +34,14 @@ public class EliminarArchivoServlet extends HttpServlet {
             boolean eliminado = storageService.eliminarArchivo(id);
             
             if (eliminado) {
-                response.sendRedirect("dashboard?mensaje=archivo_eliminado");
+                response.sendRedirect(request.getContextPath() + "/dashboard.jsp?mensaje=archivo_eliminado");
             } else {
-                response.sendRedirect("dashboard?error=no_se_pudo_eliminar");
+                response.sendRedirect(request.getContextPath() + "/dashboard.jsp?error=no_se_pudo_eliminar");
             }
         } catch (IOException e) {
             e.printStackTrace();
-            response.sendRedirect("dashboard?error=error_al_eliminar");
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp?error=error_al_eliminar");
         }
     }
 }
+

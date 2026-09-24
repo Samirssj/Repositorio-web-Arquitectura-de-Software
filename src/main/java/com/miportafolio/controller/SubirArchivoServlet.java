@@ -2,6 +2,7 @@ package com.miportafolio.controller;
 
 import com.miportafolio.model.Usuario;
 import com.miportafolio.service.StorageService;
+import com.miportafolio.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,13 +43,11 @@ public class SubirArchivoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+        Usuario usuario = SessionUtil.getUsuarioAutenticado(request);
+        if (usuario == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=sesion_requerida");
             return;
         }
-        
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
         
         try {
             request.setCharacterEncoding("UTF-8");
