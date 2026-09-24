@@ -29,8 +29,16 @@ RUN mkdir -p /usr/local/tomcat/webapps/uploads
 # Copiar el WAR generado por Maven
 COPY --from=build /app/target/MiPortafolio.war /usr/local/tomcat/webapps/ROOT.war
 
+RUN printf '#!/bin/sh\n\
+PORT=${PORT:-8080}\n\
+echo "Iniciando Tomcat en puerto ${PORT}"\n\
+sed -i "s/port=\"8080\"/port=\"${PORT}\"/" /usr/local/tomcat/conf/server.xml\n\
+exec catalina.sh run\n\
+' > /usr/local/tomcat/start.sh \
+&& chmod +x /usr/local/tomcat/start.sh
+
 # Puerto utilizado por Tomcat
 EXPOSE 8080
 
 # Iniciar Tomcat
-CMD ["catalina.sh", "run"]
+CMD ["/usr/local/tomcat/start.sh"]
