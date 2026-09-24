@@ -3,6 +3,7 @@ package com.miportafolio.service;
 import com.miportafolio.config.DatabaseConfig;
 import com.miportafolio.dao.ArchivoDAO;
 import com.miportafolio.model.Archivo;
+import com.miportafolio.model.ArchivoContenido;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,18 +33,41 @@ public class StorageService {
         return Paths.get(this.uploadDirectory);
     }
     
-    // Método principal con el parámetro semana
-    public Archivo guardarArchivo(String nombre, String descripcion, String tipo, Path filePath, Long usuarioId, int semana) {
+    // Método principal con soporte binario persistente en Supabase PostgreSQL
+    public Archivo guardarArchivo(String nombre, String descripcion, String tipo, Path filePath, Long usuarioId, int semana, byte[] fileBytes, String mimeType) {
         Archivo archivo = new Archivo();
         archivo.setNombre(nombre);
         archivo.setDescripcion(descripcion);
         archivo.setTipo(tipo);
-        archivo.setUrl("uploads/" + filePath.getFileName().toString());
+        archivo.setUrl("uploads/" + (filePath != null ? filePath.getFileName().toString() : System.currentTimeMillis() + ".dat"));
         archivo.setUsuarioId(usuarioId);
         archivo.setSemana(semana);
 
         boolean guardado = archivoDAO.crearArchivo(archivo);
-        return guardado ? archivo : null;
+        if (guardado && archivo.getId() != null) {
+            byte[] bytesToSave = fileBytes;
+            if (bytesToSave == null && filePath != null && Files.exists(filePath)) {
+                try {
+                    bytesToSave = Files.readAllBytes(filePath);
+                } catch (IOException ignored) {}
+            }
+            if (bytesToSave != null) {
+                archivoDAO.guardarContenido(archivo.getId(), bytesToSave, mimeType);
+            }
+            return archivo;
+        }
+        return null;
+    }
+
+    // Sobrecarga estándar (lee del archivo en disco para persistir también en base de datos)
+    public Archivo guardarArchivo(String nombre, String descripcion, String tipo, Path filePath, Long usuarioId, int semana) {
+        byte[] fileBytes = null;
+        if (filePath != null && Files.exists(filePath)) {
+            try {
+                fileBytes = Files.readAllBytes(filePath);
+            } catch (IOException ignored) {}
+        }
+        return guardarArchivo(nombre, descripcion, tipo, filePath, usuarioId, semana, fileBytes, null);
     }
 
     // Sobrecarga por defecto (por si se invoca sin indicar la semana)
@@ -65,6 +89,14 @@ public class StorageService {
     
     public boolean actualizarArchivo(Archivo archivo) {
         return archivoDAO.actualizarArchivo(archivo);
+    }
+
+    public ArchivoContenido obtenerContenido(Long archivoId) {
+        return archivoDAO.obtenerContenido(archivoId);
+    }
+
+    public boolean guardarContenido(Long archivoId, byte[] datos, String mimeType) {
+        return archivoDAO.guardarContenido(archivoId, datos, mimeType);
     }
     
     public boolean eliminarArchivo(Long id) throws IOException {

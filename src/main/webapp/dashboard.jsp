@@ -23,7 +23,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración | Academia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <script>
         (function () {
@@ -80,7 +80,7 @@
     <main class="dashboard-main">
         <div style="margin-bottom: 24px;">
             <h1>Gestión de Contenido Académico</h1>
-            <p style="color: var(--muted); font-size: 14px;">Sube recursos a la base de datos Supabase y gestiona los archivos del repositorio.</p>
+            <p style="color: var(--muted); font-size: 14px;">Sube y edita recursos (imágenes, documentos, guías, códigos) asignados a cualquier semana (1 a 16).</p>
         </div>
 
         <% if (request.getAttribute("error") != null) { %>
@@ -103,15 +103,29 @@
             </div>
         <% } %>
 
+        <% if ("archivo_editado".equals(request.getParameter("mensaje"))) { 
+            String semParam = request.getParameter("semana");
+        %>
+            <div style="padding: 14px 18px; background: rgba(34, 197, 94, 0.12); border: 1px solid #22c55e; color: #22c55e; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <span>✓ <strong>¡Éxito!</strong> El trabajo académico fue modificado y guardado correctamente.</span>
+                <% if (semParam != null && !semParam.trim().isEmpty()) { %>
+                    <a href="${pageContext.request.contextPath}/semana?num=<%= semParam %>" target="_blank" style="color: #22c55e; font-weight: 700; text-decoration: underline; font-size: 13px;">Ver en Semana <%= semParam %> →</a>
+                <% } %>
+            </div>
+        <% } %>
+
         <div class="dashboard-content">
+            <!-- PANEL DE SUBIDA: SOPORTA IMÁGENES Y DOCUMENTOS EN CUALQUIER SEMANA -->
             <section class="content-panel">
-                <h3 style="margin-bottom: 16px;">Subir Trabajos / Recursos Académicos</h3>
-                <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">Puedes seleccionar y subir varios archivos a la vez para la misma semana (guías, diapositivas, códigos, diagramas, etc.).</p>
+                <h3 style="margin-bottom: 12px;">📤 Subir Trabajos / Recursos Académicos</h3>
+                <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">
+                    Puedes subir <strong>imágenes</strong> (PNG, JPG, SVG, WebP) y <strong>documentos</strong> (PDF, Word, TXT, ZIP, código) a <strong>cualquier semana académica (1 a 16)</strong>, de forma individual o múltiple.
+                </p>
                 
                 <form action="${pageContext.request.contextPath}/subir-archivo" method="POST" enctype="multipart/form-data" id="uploadForm">
                     <div class="form-group" style="margin-bottom: 12px;">
                         <label style="display: block; font-weight: 700; margin-bottom: 4px;">Título del Proyecto o Prefijo (Opcional si subes varios)</label>
-                        <input type="text" name="nombre" id="nombreInput" placeholder="Ej. Guía 1 - Algoritmos (O deja vacío para usar el nombre del archivo)" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
+                        <input type="text" name="nombre" id="nombreInput" placeholder="Ej. Diagrama de Arquitectura / Guía Práctica (O deja vacío para usar el nombre del archivo)" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
                     </div>
 
                     <div class="form-group" style="margin-bottom: 12px;">
@@ -119,30 +133,32 @@
                         <textarea name="descripcion" rows="3" placeholder="Ingresa un resumen o contexto de los recursos..." style="width: 100%; border-radius: 8px; padding: 10px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);"></textarea>
                     </div>
 
-                    <!-- SELECCIÓN DE SEMANA: SOPORTA MÚLTIPLES TRABAJOS POR SEMANA -->
-                    <div class="form-group" style="margin-bottom: 12px;">
-                        <label style="display: block; font-weight: 700; margin-bottom: 4px;">Semana Académica Asignada</label>
-                        <select name="semana" id="semanaSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
-                            <% for (int i = 1; i <= 16; i++) { %>
-                                <option value="<%= i %>">Semana <%= String.format("%02d", i) %></option>
-                            <% } %>
-                        </select>
-                    </div>
+                    <!-- SELECCIÓN DE CUALQUIER SEMANA: 1 A 16 -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        <div class="form-group">
+                            <label style="display: block; font-weight: 700; margin-bottom: 4px;">Semana Académica Asignada</label>
+                            <select name="semana" id="semanaSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
+                                <% for (int i = 1; i <= 16; i++) { %>
+                                    <option value="<%= i %>">Semana <%= String.format("%02d", i) %></option>
+                                <% } %>
+                            </select>
+                        </div>
 
-                    <div class="form-group" style="margin-bottom: 16px;">
-                        <label style="display: block; font-weight: 700; margin-bottom: 4px;">Categoría Predeterminada</label>
-                        <select name="tipo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
-                            <option value="auto">Detección automática por extensión</option>
-                            <option value="pdf">Documento PDF</option>
-                            <option value="documento">Documento Word / Texto</option>
-                            <option value="imagen">Imagen / Diagrama</option>
-                        </select>
+                        <div class="form-group">
+                            <label style="display: block; font-weight: 700; margin-bottom: 4px;">Categoría</label>
+                            <select name="tipo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink);">
+                                <option value="auto">Detección automática por extensión</option>
+                                <option value="imagen">Imagen / Diagrama (PNG, JPG, SVG)</option>
+                                <option value="pdf">Documento PDF</option>
+                                <option value="documento">Documento Word / Código / ZIP</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click();" style="cursor: pointer; border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
                         <div class="drop-zone-icon" style="font-size: 36px; margin-bottom: 8px;">📁</div>
-                        <p id="dropZoneTitle" style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">Arrastra uno o varios archivos aquí o haz clic para examinar</p>
-                        <p style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">Puedes seleccionar múltiples archivos en una sola subida (PDF, DOCX, PNG, JPG)</p>
+                        <p id="dropZoneTitle" style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">Arrastra una imagen y/o un documento aquí, o haz clic para examinar</p>
+                        <p style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">Puedes seleccionar imágenes (PNG, JPG) y documentos (PDF, DOCX) a la vez</p>
                         <div id="fileListPreview" style="margin-top: 12px; display: none; text-align: left; background: var(--surface); padding: 12px; border-radius: 8px; border: 1px solid var(--line); font-size: 12px;"></div>
                         <input type="file" id="fileInput" name="archivos" multiple style="display: none;">
                     </div>
@@ -151,6 +167,7 @@
                 </form>
             </section>
 
+            <!-- PANEL DE LISTADO Y GESTIÓN CON OPCIÓN DE EDICIÓN -->
             <section class="content-panel" style="margin-top: 24px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                     <h3 style="margin: 0;">Repositorio Activo (<span id="totalCount"><%= (archivos != null) ? archivos.size() : 0 %></span> trabajos)</h3>
@@ -179,6 +196,9 @@
                             <%
                                 if (archivos != null && !archivos.isEmpty()) {
                                     for (Archivo arch : archivos) {
+                                        String descSegura = (arch.getDescripcion() != null) ? arch.getDescripcion().replace("'", "\\'").replace("\"", "&quot;").replace("\n", " ") : "";
+                                        String nomSeguro = arch.getNombre().replace("'", "\\'").replace("\"", "&quot;");
+                                        String urlSegura = arch.getUrl().replace("'", "\\'");
                             %>
                             <tr class="fila-archivo" data-semana="<%= arch.getSemana() %>" style="border-bottom: 1px solid var(--line);">
                                 <td style="padding: 10px;">
@@ -196,7 +216,11 @@
                                 </td>
                                 <td style="padding: 10px;"><span style="color: var(--blue); font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
                                 <td style="padding: 10px; white-space: nowrap;">
-                                    <a href="${pageContext.request.contextPath}/archivos?action=ver&id=<%= arch.getId() %>" style="color: var(--blue); font-weight: 700; margin-right: 12px;">Ver</a>
+                                    <!-- BOTÓN EDITAR -->
+                                    <button type="button" onclick="abrirModalEditar('<%= arch.getId() %>', '<%= nomSeguro %>', '<%= descSegura %>', '<%= arch.getSemana() %>', '<%= arch.getTipo() %>', '<%= urlSegura %>')" style="background: none; border: none; color: var(--blue); font-weight: 700; cursor: pointer; padding: 0; margin-right: 12px; font-size: 13px;" title="Editar este trabajo">
+                                        ✏️ Editar
+                                    </button>
+                                    <a href="${pageContext.request.contextPath}/archivos?action=ver&id=<%= arch.getId() %>" style="color: var(--ink); font-weight: 600; margin-right: 12px;">Ver</a>
                                     <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= arch.getId() %>" target="_blank" style="color: var(--muted); font-weight: 600; margin-right: 12px;">Descargar</a>
                                     <a href="${pageContext.request.contextPath}/archivos?action=eliminar&id=<%= arch.getId() %>" style="color: var(--red); font-weight: 700;" onclick="return confirm('¿Eliminar este trabajo?');">Eliminar</a>
                                 </td>
@@ -218,6 +242,69 @@
             </section>
         </div>
     </main>
+</div>
+
+<!-- MODAL PARA EDITAR TRABAJOS DIRECTAMENTE -->
+<div id="editModal" class="media-modal" onclick="cerrarModalEditar(event)">
+    <div class="media-modal-card" onclick="event.stopPropagation()" style="width: 100%; max-width: 580px; padding: 24px;">
+        <button class="media-modal-close" onclick="cerrarModalEditar()" title="Cerrar (Esc)">✕</button>
+        <div style="margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 18px; color: var(--ink);">✏️ Editar Trabajo Académico</h3>
+            <span style="font-size: 12px; color: var(--muted);">Modifica el nombre, descripción, semana asignada o reemplaza el archivo</span>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/editar-archivo" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id" id="editId">
+
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px; font-size: 12px;">Título del Trabajo / Archivo</label>
+                <input type="text" name="nombre" id="editNombre" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-size: 13px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px; font-size: 12px;">Descripción o Notas</label>
+                <textarea name="descripcion" id="editDescripcion" rows="3" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-size: 13px;"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                <div class="form-group">
+                    <label style="display: block; font-weight: 700; margin-bottom: 4px; font-size: 12px;">Semana Asignada (1 a 16)</label>
+                    <select name="semana" id="editSemana" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-size: 13px;">
+                        <% for (int i = 1; i <= 16; i++) { %>
+                            <option value="<%= i %>">Semana <%= String.format("%02d", i) %></option>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; font-weight: 700; margin-bottom: 4px; font-size: 12px;">Tipo / Categoría</label>
+                    <select name="tipo" id="editTipo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-size: 13px;">
+                        <option value="auto">Detección automática</option>
+                        <option value="imagen">Imagen / Diagrama</option>
+                        <option value="pdf">Documento PDF</option>
+                        <option value="documento">Documento Word / Código</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background: var(--surface-soft); border: 1px solid var(--line); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Archivo actual:</span>
+                    <a id="editCurrentFileLink" href="#" target="_blank" style="font-size: 11px; font-weight: 700; color: var(--blue); text-decoration: none;">Ver actual ↗</a>
+                </div>
+                <div id="editCurrentFilePath" style="font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--ink); word-break: break-all; margin-bottom: 8px;"></div>
+                
+                <label style="display: block; font-weight: 700; margin-bottom: 4px; font-size: 12px;">Reemplazar archivo (Opcional):</label>
+                <input type="file" name="nuevoArchivo" style="width: 100%; font-size: 12px;">
+                <span style="font-size: 11px; color: var(--muted); display: block; margin-top: 3px;">Deja vacío si deseas conservar el archivo actual.</span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="cerrarModalEditar()" class="btn" style="background: var(--surface-soft); color: var(--ink); border: 1px solid var(--line); padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 700;">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="padding: 8px 18px; font-size: 12px; font-weight: 700;">💾 Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <footer class="site-footer">
@@ -280,7 +367,7 @@
     function updateFileList() {
         const files = fileInput.files;
         if (!files || files.length === 0) {
-            dropZoneTitle.textContent = "Arrastra uno o varios archivos aquí o haz clic para examinar";
+            dropZoneTitle.textContent = "Arrastra una imagen y/o un documento aquí, o haz clic para examinar";
             fileListPreview.style.display = 'none';
             fileListPreview.innerHTML = '';
             return;
@@ -324,6 +411,37 @@
             sinCoincidencias.style.display = (visibles === 0 && filas.length > 0) ? '' : 'none';
         }
     }
+
+    function abrirModalEditar(id, nombre, descripcion, semana, tipo, url) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editNombre').value = nombre;
+        document.getElementById('editDescripcion').value = descripcion;
+        document.getElementById('editSemana').value = semana;
+        document.getElementById('editTipo').value = tipo || 'auto';
+        document.getElementById('editCurrentFilePath').textContent = url;
+        document.getElementById('editCurrentFileLink').href = '${pageContext.request.contextPath}/descargar-archivo?id=' + id;
+        
+        const modal = document.getElementById('editModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalEditar(e) {
+        const modal = document.getElementById('editModal');
+        if (!e || e.target === modal || e.target.classList.contains('media-modal-close') || e.target.tagName === 'BUTTON') {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const editModal = document.getElementById('editModal');
+            if (editModal && editModal.classList.contains('active')) {
+                cerrarModalEditar();
+            }
+        }
+    });
 </script>
 </body>
 </html>

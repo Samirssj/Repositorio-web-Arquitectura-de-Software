@@ -2,12 +2,27 @@ package com.miportafolio.dao;
 
 import com.miportafolio.config.DatabaseConfig;
 import com.miportafolio.model.Archivo;
+import com.miportafolio.model.ArchivoContenido;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArchivoDAO {
+
+    static {
+        // Asegurar que la tabla archivo_contenido exista en Supabase PostgreSQL
+        try (Connection conn = DatabaseConfig.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS archivo_contenido (" +
+                               "archivo_id BIGINT PRIMARY KEY REFERENCES archivos(id) ON DELETE CASCADE, " +
+                               "datos BYTEA NOT NULL, " +
+                               "mime_type VARCHAR(100), " +
+                               "tamanio BIGINT)");
+        } catch (Exception e) {
+            // Silencioso o log
+        }
+    }
     
     public boolean crearArchivo(Archivo archivo) {
         String sql = "INSERT INTO archivos (nombre, descripcion, tipo, url, usuario_id, semana) VALUES (?, ?, ?, ?, ?, ?)";
@@ -139,6 +154,61 @@ public class ArchivoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean guardarContenido(Long archivoId, byte[] datos, String mimeType) {
+        if (archivoId == null || datos == null) return false;
+        String sql = "INSERT INTO archivo_contenido (archivo_id, datos, mime_type, tamanio) " +
+                     "VALUES (?, ?, ?, ?) " +
+                     "ON CONFLICT (archivo_id) DO UPDATE SET " +
+                     "datos = EXCLUDED.datos, mime_type = EXCLUDED.mime_type, tamanio = EXCLUDED.tamanio";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, archivoId);
+            stmt.setBytes(2, datos);
+            stmt.setString(3, mimeType);
+            stmt.setLong(4, datos.length);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public ArchivoContenido obtenerContenido(Long archivoId) {
+        if (archivoId == null) return null;
+        String sql = "SELECT archivo_id, datos, mime_type, tamanio FROM archivo_contenido WHERE archivo_id = ?";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, archivoId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    ArchivoContenido ac = new ArchivoContenido();
+                    ac.setArchivoId(rs.getLong("archivo_id"));
+                    ac.setDatos(rs.getBytes("datos"));
+                    ac.setMimeType(rs.getString("mime_type"));
+                    ac.setTamanio(rs.getLong("tamanio"));
+                    return ac;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean eliminarContenido(Long archivoId) {
+        if (archivoId == null) return false;
+        String sql = "DELETE FROM archivo_contenido WHERE archivo_id = ?";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, archivoId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

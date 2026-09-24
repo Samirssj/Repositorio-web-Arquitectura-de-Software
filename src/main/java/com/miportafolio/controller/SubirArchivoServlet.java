@@ -101,10 +101,18 @@ public class SubirArchivoServlet extends HttpServlet {
                 String cleanName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
                 String uniqueDiskName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString().substring(0, 6) + "_" + cleanName;
                 
-                // Guardar archivo en disco
-                Path filePath = uploadDirPath.resolve(uniqueDiskName);
+                // Leer bytes del archivo subido
+                byte[] fileBytes;
                 try (InputStream input = filePart.getInputStream()) {
-                    Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    fileBytes = input.readAllBytes();
+                }
+
+                // Guardar archivo en disco si el entorno lo permite (caché local)
+                Path filePath = uploadDirPath.resolve(uniqueDiskName);
+                try {
+                    Files.write(filePath, fileBytes);
+                } catch (Exception ex) {
+                    System.err.println("Aviso: No se pudo guardar en disco local (entorno efímero/solo-lectura): " + ex.getMessage());
                 }
                 
                 // Determinar el nombre/título para mostrar
@@ -131,14 +139,16 @@ public class SubirArchivoServlet extends HttpServlet {
                     itemTipo = tipo;
                 }
                 
-                // Guardado en la base de datos Supabase
+                // Guardado persistente tanto en metadatos como en Supabase PostgreSQL (archivo_contenido)
                 var archivo = storageService.guardarArchivo(
                     itemNombre, 
                     descripcion != null ? descripcion : "", 
                     itemTipo, 
                     filePath, 
                     usuario.getId(),
-                    semana
+                    semana,
+                    fileBytes,
+                    filePart.getContentType()
                 );
                 
                 if (archivo != null) {
@@ -166,9 +176,9 @@ public class SubirArchivoServlet extends HttpServlet {
             return "imagen";
         } else if (extension.endsWith(".pdf")) {
             return "pdf";
-        } else if (extension.endsWith(".doc") || extension.endsWith(".docx") || extension.endsWith(".txt") || extension.endsWith(".xls") || extension.endsWith(".xlsx") || extension.endsWith(".ppt") || extension.endsWith(".pptx")) {
+        } else if (extension.endsWith(".doc") || extension.endsWith(".docx") || extension.endsWith(".txt") || extension.endsWith(".xls") || extension.endsWith(".xlsx") || extension.endsWith(".ppt") || extension.endsWith(".pptx") || extension.endsWith(".zip") || extension.endsWith(".rar") || extension.endsWith(".7z") || extension.endsWith(".java") || extension.endsWith(".py") || extension.endsWith(".c") || extension.endsWith(".cpp") || extension.endsWith(".sql") || extension.endsWith(".md")) {
             return "documento";
         }
-        return "otro";
+        return "documento";
     }
 }

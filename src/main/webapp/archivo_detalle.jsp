@@ -101,6 +101,9 @@
                 <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
                     <span>📥</span> Abrir / Ver Archivo
                 </a>
+                <a href="${pageContext.request.contextPath}/editar_trabajo.jsp?id=<%= archivo.getId() %>" class="btn" style="background: var(--blue-soft); color: var(--blue); border: 1px solid var(--blue); padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    ✏️ Editar Trabajo
+                </a>
                 <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>&modo=descargar" class="btn" style="background: var(--surface-soft); color: var(--ink); border: 1px solid var(--line); padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none;">
                     💾 Descargar al Disco
                 </a>
