@@ -7,6 +7,11 @@
     <title>Acerca de mí | Academia - UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
+    <script>
+        (function () {
+            document.documentElement.setAttribute("data-theme", "dark");
+        })();
+    </script>
     <style>
         .about-grid {
             display: grid;
@@ -260,9 +265,6 @@
         </ul>
 
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
-                <span class="theme-icon">🌙</span>
-            </button>
             <div class="avatar">SR</div>
         </div>
     </nav>

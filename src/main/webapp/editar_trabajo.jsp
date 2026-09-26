@@ -35,8 +35,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
-            const savedTheme = localStorage.getItem("academia-theme") || "dark";
-            document.documentElement.setAttribute("data-theme", savedTheme);
+            document.documentElement.setAttribute("data-theme", "dark");
         })();
     </script>
 </head>
@@ -62,9 +61,6 @@
         </ul>
 
         <div class="nav-actions">
-            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
-                <span class="theme-icon">🌙</span>
-            </button>
             <div class="avatar">AD</div>
         </div>
     </nav>

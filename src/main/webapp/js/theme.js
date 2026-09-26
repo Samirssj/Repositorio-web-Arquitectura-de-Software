@@ -4,36 +4,9 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     
-    // 1. ALTERNADOR DE TEMA (DARK / LIGHT MODE)
-    const themeButtons = document.querySelectorAll("#themeToggle, .theme-toggle");
-    
-    function applyTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("academia-theme", theme);
-        
-        // Actualiza los íconos de todos los botones de tema en la pantalla
-        themeButtons.forEach(btn => {
-            const iconSpan = btn.querySelector(".theme-icon");
-            if (iconSpan) {
-                iconSpan.textContent = theme === "dark" ? "🌙" : "☀️";
-            } else {
-                btn.textContent = theme === "dark" ? "🌙" : "☀️";
-            }
-        });
-    }
-
-    // Inicialización del estado del tema al cargar
-    const savedTheme = localStorage.getItem("academia-theme") || "dark";
-    applyTheme(savedTheme);
-
-    // Asignar evento click a todos los botones de tema
-    themeButtons.forEach(btn => {
-        btn.addEventListener("click", function () {
-            const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-            const newTheme = currentTheme === "dark" ? "light" : "dark";
-            applyTheme(newTheme);
-        });
-    });
+    // 1. TEMA OSCURO PREDETERMINADO
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("academia-theme", "dark");
 
 
     // 2. CONTROL DEL MENÚ LATERAL FLOATING (OFF-CANVAS DRAWER)

@@ -139,8 +139,7 @@
     </style>
     <script>
         (function () {
-            const savedTheme = localStorage.getItem("academia-theme") || "dark";
-            document.documentElement.setAttribute("data-theme", savedTheme);
+            document.documentElement.setAttribute("data-theme", "dark");
         })();
     </script>
 </head>
