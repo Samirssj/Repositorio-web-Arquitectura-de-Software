@@ -15,9 +15,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academia | Repositorio de Software</title>
+    <title>Arquitectura de Software | Portafolio Académico UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <style>
+        /* ============================================================
+           ESTILOS ESPECÍFICOS: PRESENTACIÓN DEL CURSO (HERO & PILARES)
+           ============================================================ */
+        .course-hero {
+            position: relative;
+            background: linear-gradient(135deg, #090e1a 0%, #0f172a 50%, #1e1b4b 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 24px;
+            padding: 44px;
+            color: #ffffff;
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.5), 0 0 25px rgba(49, 94, 251, 0.15);
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .course-hero::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .course-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(49, 94, 251, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1.25fr 0.95fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 960px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .course-hero {
+                padding: 30px 24px;
+            }
+        }
+
+        .hero-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .hero-pill-secondary {
+            background: rgba(148, 163, 184, 0.12);
+            border-color: rgba(148, 163, 184, 0.25);
+            color: #cbd5e1;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse-dot-anim 2s infinite;
+        }
+
+        @keyframes pulse-dot-anim {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.1rem, 3.6vw, 3rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title-accent {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            font-weight: 700;
+            color: #93c5fd;
+            margin-bottom: 14px;
+        }
+
+        .hero-description {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 620px;
+            margin-bottom: 24px;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, #315efb, #0284c7);
+            color: white;
+            padding: 12px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(49, 94, 251, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(49, 94, 251, 0.6);
+            color: white;
+        }
+
+        .btn-outline-glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f1f5f9;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-outline-glass:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        /* KPIs del curso en el Hero */
+        .hero-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .hero-stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        .stat-item {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 800;
+            color: #38bdf8;
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Tarjeta Blueprint de Arquitectura (Columna Derecha) */
+        .blueprint-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 18px;
+            padding: 22px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .blueprint-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .t-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .t-red { background: #ef4444; }
+        .t-yellow { background: #f59e0b; }
+        .t-green { background: #10b981; }
+
+        .blueprint-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .arch-stack-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stack-layer {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stack-layer::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .stack-layer-4::before { background: #a855f7; }
+        .stack-layer-3::before { background: #38bdf8; }
+        .stack-layer-2::before { background: #3b82f6; }
+        .stack-layer-1::before { background: #10b981; }
+
+        .stack-layer:hover {
+            transform: translateX(4px);
+            background: rgba(30, 41, 59, 0.95);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .layer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .layer-name {
+            font-size: 12px;
+            font-weight: 800;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .layer-unit-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+        }
+
+        .layer-techs {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* SECCIÓN DE PILARES FORMATIVOS */
+        .pillars-section {
+            margin-bottom: 48px;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .pillar-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-small);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--blue);
+        }
+
+        .pillar-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--blue-soft);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(49, 94, 251, 0.15);
+        }
+
+        .pillar-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .pillar-desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .pillar-badge {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        /* FICHA RESUMEN DEL CURSO */
+        .course-meta-bar {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 44px;
+            box-shadow: var(--shadow-small);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-icon {
+            font-size: 24px;
+        }
+
+        .meta-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-val {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--ink);
+        }
+    </style>
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -70,29 +507,222 @@
 </aside>
 
 <main class="page-shell">
-    <section class="hero-panel">
-        <div class="hero-grid">
-            <div class="hero-content">
-                <span class="eyebrow">PORTAFOLIO ACADÉMICO</span>
-                <h1>Aprender, crear y compartir.</h1>
-                <p>Repositorio centralizado para arquitectura de software, gestión de proyectos y recursos académicos de ingeniería.</p>
-                
-                <div class="hero-actions">
-                    <a href="unidades.jsp" class="btn btn-primary">Explorar unidades</a>
-                    <a href="acerca.jsp" class="btn btn-ghost">Conocerme</a>
+
+    <!-- ============================================================
+         HERO PRINCIPAL: PRESENTACIÓN MODERNA Y LLAMATIVA DEL CURSO
+         ============================================================ -->
+    <section class="course-hero">
+        <div class="hero-layout">
+            <div>
+                <div class="hero-badge-container">
+                    <span class="hero-pill">
+                        <span class="pulse-dot"></span>
+                        Asignatura Profesional · VIII Ciclo
+                    </span>
+                    <span class="hero-pill hero-pill-secondary">Código: 332181</span>
+                    <span class="hero-pill hero-pill-secondary">Ingeniería de Sistemas</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Arquitectura de <span class="hero-title-accent">Software</span>
+                </h1>
+
+                <div class="hero-subtitle">
+                    Universidad Peruana Los Andes · Facultad de Ingeniería
+                </div>
+
+                <p class="hero-description">
+                    Espacio académico universitario y repositorio de recursos enfocado en el diseño, modelado orientado a objetos con UML, comunicación e integración de sistemas, y frameworks empresariales bajo estándares internacionales (ISO/IEC 25010 y IEEE 42010).
+                </p>
+
+                <div class="hero-cta-group">
+                    <a href="#unidades-curso" class="btn-glow">
+                        <span>📚</span>
+                        <span>Explorar Unidades del Curso</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/unidades.jsp" class="btn-outline-glass">
+                        <span>📄</span>
+                        <span>Ver Sílabo Completo (16 Semanas)</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/acerca.jsp" class="btn-outline-glass">
+                        <span>👤</span>
+                        <span>Acerca del Autor</span>
+                    </a>
+                </div>
+
+                <div class="hero-stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number">16</div>
+                        <div class="stat-label">Semanas Académicas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Unidades Temáticas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Cobertura de Sílabo</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">ABP</div>
+                        <div class="stat-label">Metodología de Proyectos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Stack y Blueprint Arquitectónico -->
+            <div>
+                <div class="blueprint-card">
+                    <div class="blueprint-header">
+                        <div class="terminal-dots">
+                            <span class="t-dot t-red"></span>
+                            <span class="t-dot t-yellow"></span>
+                            <span class="t-dot t-green"></span>
+                        </div>
+                        <span class="blueprint-title">blueprint_arquitectura.json</span>
+                    </div>
+
+                    <div class="arch-stack-layers">
+                        <div class="stack-layer stack-layer-4">
+                            <div class="layer-top">
+                                <span class="layer-name">⚡ Capa 4: Frameworks & Despliegue</span>
+                                <span class="layer-unit-tag">Unidad IV</span>
+                            </div>
+                            <div class="layer-techs">Jakarta EE · Spring · Microservicios · Docker · Métricas</div>
+                        </div>
+
+                        <div class="stack-layer stack-layer-3">
+                            <div class="layer-top">
+                                <span class="layer-name">🔄 Capa 3: Comunicación e Integración</span>
+                                <span class="layer-unit-tag">Unidad III</span>
+                            </div>
+                            <div class="layer-techs">REST APIs · WebSockets · Protocolos · Interoperabilidad</div>
+                        </div>
+
+                        <div class="stack-layer stack-layer-2">
+                            <div class="layer-top">
+                                <span class="layer-name">📐 Capa 2: Modelado POO & UML</span>
+                                <span class="layer-unit-tag">Unidad II</span>
+                            </div>
+                            <div class="layer-techs">SOLID · Diagramas UML · Componentes · Bajo Acoplamiento</div>
+                        </div>
+
+                        <div class="stack-layer stack-layer-1">
+                            <div class="layer-top">
+                                <span class="layer-name">🏛️ Capa 1: Fundamentos & Estándares</span>
+                                <span class="layer-unit-tag">Unidad I</span>
+                            </div>
+                            <div class="layer-techs">ISO/IEC 25010 · IEEE 42010 · Patrones MVC / Capas</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #94a3b8;">
+                        <span>Enfoque: Calidad & Escalabilidad</span>
+                        <span style="color: #38bdf8; font-weight: 700;">Malla Curricular UPLA 2026</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN DE UNIDADES: ESTRUCTURA EXACTA DE LA IMAGEN CON PROGRESO DINÁMICO -->
-    <section class="projects-section">
+    <!-- ============================================================
+         BARRA METADATA DEL CURSO
+         ============================================================ -->
+    <div class="course-meta-bar">
+        <div class="meta-item">
+            <span class="meta-icon">🏛️</span>
+            <div>
+                <div class="meta-title">Universidad</div>
+                <div class="meta-val">Peruana Los Andes (UPLA)</div>
+            </div>
+        </div>
+
+        <div class="meta-item">
+            <span class="meta-icon">💻</span>
+            <div>
+                <div class="meta-title">Escuela Profesional</div>
+                <div class="meta-val">Ingeniería de Sistemas y Computación</div>
+            </div>
+        </div>
+
+        <div class="meta-item">
+            <span class="meta-icon">🎓</span>
+            <div>
+                <div class="meta-title">Semestre</div>
+                <div class="meta-val">VIII Ciclo Académico</div>
+            </div>
+        </div>
+
+        <div class="meta-item">
+            <span class="meta-icon">📋</span>
+            <div>
+                <div class="meta-title">Metodología</div>
+                <div class="meta-val">Aprendizaje Basado en Proyectos (ABP)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         PILARES DE LA ASIGNATURA
+         ============================================================ -->
+    <section class="pillars-section">
         <div class="section-heading">
             <div>
-                <span class="section-label">RUTA DE APRENDIZAJE</span>
-                <h2>Unidades del Curso</h2>
+                <span class="section-label">COMPETENCIAS FORMATIVAS</span>
+                <h2 style="font-size: 26px; font-weight: 800;">Pilares de la Arquitectura de Software</h2>
             </div>
-            <a href="unidades.jsp" class="section-link">Ver todo el sílabo →</a>
+            <a href="${pageContext.request.contextPath}/acerca.jsp" class="section-link">Conocer al autor →</a>
+        </div>
+
+        <div class="pillars-grid">
+            <article class="pillar-card">
+                <div class="pillar-icon-box">🏛️</div>
+                <h3 class="pillar-title">Estándares y Calidad</h3>
+                <p class="pillar-desc">
+                    Dominio de las normas internacionales <strong>ISO/IEC 25010</strong> y <strong>IEEE 42010</strong>. Evaluación de atributos de calidad como mantenibilidad, rendimiento, seguridad y tolerancia a fallos.
+                </p>
+                <span class="pillar-badge">Unidad I · Semanas 1 a 4</span>
+            </article>
+
+            <article class="pillar-card">
+                <div class="pillar-icon-box">📐</div>
+                <h3 class="pillar-title">Modelado con UML y POO</h3>
+                <p class="pillar-desc">
+                    Aplicación de principios <strong>SOLID</strong>, alta cohesión y bajo acoplamiento. Representación lógica y física mediante diagramas de clases, paquetes, componentes y casos de uso.
+                </p>
+                <span class="pillar-badge">Unidad II · Semanas 5 a 8</span>
+            </article>
+
+            <article class="pillar-card">
+                <div class="pillar-icon-box">🔄</div>
+                <h3 class="pillar-title">Comunicación e Integración</h3>
+                <p class="pillar-desc">
+                    Diseño de interfaces de intercambio de datos, <strong>APIs RESTful</strong>, transmisión segura y desacoplada mediante protocolos de mensajería para sistemas distribuidos.
+                </p>
+                <span class="pillar-badge">Unidad III · Semanas 9 a 12</span>
+            </article>
+
+            <article class="pillar-card">
+                <div class="pillar-icon-box">⚡</div>
+                <h3 class="pillar-title">Frameworks y Despliegue</h3>
+                <p class="pillar-desc">
+                    Implementación de arquitecturas modernas utilizando tecnologías líderes como <strong>Jakarta EE</strong> y <strong>Spring</strong>, pruebas de carga y optimización estructural continua.
+                </p>
+                <span class="pillar-badge">Unidad IV · Semanas 13 a 16</span>
+            </article>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECCIÓN DE UNIDADES: RUTA DE APRENDIZAJE Y PROGRESO DINÁMICO
+         ============================================================ -->
+    <section id="unidades-curso" class="projects-section">
+        <div class="section-heading">
+            <div>
+                <span class="section-label">PLAN DE ESTUDIOS OFICIAL</span>
+                <h2 style="font-size: 26px; font-weight: 800;">Ruta de Aprendizaje y Entregables</h2>
+            </div>
+            <a href="${pageContext.request.contextPath}/unidades.jsp" class="section-link">Ver las 16 semanas detalladas →</a>
         </div>
 
         <div class="unit-cards-grid">
@@ -109,7 +739,7 @@
                 <a href="${pageContext.request.contextPath}/unidades.jsp#unidad-<%= u.getNumeroRomano().toLowerCase() %>" class="unit-card-item">
                     <div>
                         <div class="unit-card-top">
-                            <span class="unit-card-tag">UNIDAD <%= u.getNumero() %></span>
+                            <span class="unit-card-tag">UNIDAD <%= u.getNumeroRomano() %></span>
                             <span class="unit-card-status"><%= porcentaje %>% Completado</span>
                         </div>
                         <h3 class="unit-card-title">Unidad <%= u.getNumero() %>: <%= u.getTitulo() %></h3>
@@ -118,7 +748,7 @@
 
                     <div class="unit-card-footer">
                         <div class="unit-progress-text">
-                            <span class="unit-progress-label">Progreso de la unidad</span>
+                            <span class="unit-progress-label">Progreso de entregables</span>
                             <span class="unit-progress-ratio"><%= semanasCompletadas %>/<%= totalSemanas %> semanas</span>
                         </div>
                         <div class="unit-progress-track">
@@ -138,18 +768,18 @@
                 <img src="https://www.sigc.gestorinfo.upla.edu.pe/storage/per/logo.png" alt="Logo UPLA" class="brand-mark-img">
                 <span class="brand-text">UPLA</span>
             </a>
-            <p style="margin-top: 8px;">Aprender haciendo.</p>
+            <p style="margin-top: 8px;">Arquitectura de Software · Escuela Profesional de Ingeniería de Sistemas y Computación</p>
         </div>
         <div class="footer-column">
             <h4>Navegación</h4>
             <a href="${pageContext.request.contextPath}/index.jsp">Inicio</a>
-            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades</a>
+            <a href="${pageContext.request.contextPath}/unidades.jsp">Unidades y Semanas</a>
             <a href="${pageContext.request.contextPath}/acerca.jsp">Acerca de mí</a>
         </div>
         <div class="footer-column">
             <h4>Gestión</h4>
             <a href="${pageContext.request.contextPath}/login.jsp">Iniciar sesión</a>
-            <a href="${pageContext.request.contextPath}/dashboard.jsp">Administración</a>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp">Panel de Administración</a>
         </div>
     </div>
 </footer>
