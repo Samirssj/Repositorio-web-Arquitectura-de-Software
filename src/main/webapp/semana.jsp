@@ -235,12 +235,9 @@
                 <div class="attachment-card" style="text-align: center; padding: 48px 24px;">
                     <div style="font-size: 42px; margin-bottom: 12px;">📁</div>
                     <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--ink);">No hay archivos cargados para esta semana</h3>
-                    <p style="color: var(--muted); font-size: 13px; max-width: 500px; margin: 0 auto 20px;">
-                        Los materiales de la <strong><%= infoSemana.getTitulo() %></strong> que subas desde el panel de administración aparecerán organizados aquí con este mismo formato.
+                    <p style="color: var(--muted); font-size: 13px; max-width: 500px; margin: 0 auto;">
+                        Los recursos y materiales académicos correspondientes a <strong><%= infoSemana.getTitulo() %></strong> estarán disponibles próximamente.
                     </p>
-                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="btn btn-primary" style="font-size: 13px; display: inline-block;">
-                        Subir recursos a Semana <%= String.format("%02d", numeroSemana) %> →
-                    </a>
                 </div>
             <% } %>
         </section>
