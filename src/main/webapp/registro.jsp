@@ -6,49 +6,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | Academia</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <style>
-        /* Estilos específicos para el registro con soporte completo de tema oscuro */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background-color: #000000;
+            background-image: linear-gradient(180deg, #000000, #00175cbf 15%, #0040ff66 45%, #0040ff66 55%, #00175cbf 85%, #000000);
+            background-size: 100% 200%;
+            animation: gradient-move-y 15s ease infinite alternate;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 440px;
+            padding: 38px 32px;
+            background: rgba(20, 20, 26, 0.88);
+            border: 1px solid rgba(0, 64, 255, 0.35);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 64, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
         .auth-brand {
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.15em;
-            color: var(--blue);
+            color: #00f7ff;
             margin-bottom: 16px;
             text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(0, 64, 255, 0.18);
+            border: 1px solid rgba(0, 64, 255, 0.35);
+            border-radius: 6px;
+        }
+
+        .login-box h1 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .login-box label {
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
         }
 
         .login-box input[type="text"],
         .login-box input[type="email"],
         .login-box input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: #000000;
+            border: 1px solid rgba(0, 64, 255, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
             transition: all 0.2s ease;
         }
 
         .login-box input[type="text"]:focus,
         .login-box input[type="email"]:focus,
         .login-box input[type="password"]:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(49, 94, 251, 0.1);
+            border-color: #0040ff;
+            box-shadow: 0 0 16px rgba(0, 64, 255, 0.45);
         }
 
         .login-box .btn-primary {
             width: 100%;
-            margin-top: 8px;
-            height: 44px;
+            margin-top: 10px;
+            height: 46px;
             font-size: 14px;
-            font-weight: 700;
-            background: var(--blue);
-            color: white;
+            font-weight: 800;
+            background: #0040ff;
+            color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(0, 64, 255, 0.45);
         }
 
         .login-box .btn-primary:hover {
-            background: var(--blue-dark);
+            background: #1f57ff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(49, 94, 251, 0.3);
+            box-shadow: 0 0 30px rgba(0, 64, 255, 0.7);
         }
 
         .login-box .btn-primary:active {
@@ -64,13 +118,13 @@
         }
 
         .alert-error {
-            background: rgba(235, 102, 116, 0.1);
+            background: rgba(239, 68, 68, 0.12);
             border: 1px solid var(--red);
             color: var(--red);
         }
 
         .alert-success {
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(34, 197, 94, 0.12);
             border: 1px solid #22c55e;
             color: #22c55e;
         }
@@ -78,15 +132,17 @@
         .back-link {
             display: inline-block;
             margin-top: 20px;
-            color: var(--blue);
+            color: #00f7ff;
             font-size: 12px;
             font-weight: 700;
             text-decoration: none;
-            transition: opacity 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .back-link:hover {
-            opacity: 0.8;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+            transform: translateX(-2px);
         }
     </style>
     <script>

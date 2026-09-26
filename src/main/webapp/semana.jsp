@@ -29,7 +29,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semana <%= String.format("%02d", numeroSemana) %> | <%= infoSemana.getTitulo() %> | UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -40,13 +40,14 @@
         .sidebar-unit-title {
             font-size: 11px;
             font-weight: 800;
-            color: var(--blue);
+            color: #00f7ff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-top: 14px;
             margin-bottom: 6px;
-            padding: 4px 8px;
-            background: var(--blue-soft);
+            padding: 4px 10px;
+            background: rgba(0, 64, 255, 0.18);
+            border: 1px solid rgba(0, 64, 255, 0.35);
             border-radius: 6px;
         }
         .week-menu li a {
@@ -54,21 +55,22 @@
             align-items: center;
             gap: 8px;
             font-size: 12px;
-            padding: 7px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             text-decoration: none;
             color: var(--ink);
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
         .week-menu li a:hover {
-            background: var(--surface-soft);
-            color: var(--blue);
+            background: rgba(255, 255, 255, 0.06);
+            color: #00f7ff;
         }
         .week-menu li a.active {
-            background: var(--blue-soft);
-            color: var(--blue);
+            background: rgba(0, 64, 255, 0.2);
+            color: #ffffff;
             font-weight: 700;
-            border-left: 3px solid var(--blue);
+            border-left: 3px solid #0040ff;
+            box-shadow: 0 0 12px rgba(0, 64, 255, 0.25);
         }
     </style>
 </head>
@@ -194,9 +196,9 @@
                                         <span style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase;">DOCUMENTO PDF</span>
                                     </div>
                                 <% } else if (urlLower.endsWith(".doc") || urlLower.endsWith(".docx") || nomLower.contains("word") || nomLower.contains("informe")) { %>
-                                    <div style="text-align: center; color: #2563eb; padding: 16px;">
+                                    <div style="text-align: center; color: #0040ff; padding: 16px;">
                                         <div style="font-size: 38px; margin-bottom: 4px;">📘</div>
-                                        <span style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase;">DOCUMENTO WORD</span>
+                                        <span style="font-size: 11px; font-weight: 700; color: #0040ff; text-transform: uppercase;">DOCUMENTO WORD</span>
                                     </div>
                                 <% } else if (urlLower.endsWith(".zip") || urlLower.endsWith(".rar") || urlLower.endsWith(".7z")) { %>
                                     <div style="text-align: center; color: #eab308; padding: 16px;">

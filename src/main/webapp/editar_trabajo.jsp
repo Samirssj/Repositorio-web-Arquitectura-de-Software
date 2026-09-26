@@ -32,7 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Trabajo: <%= archivo.getNombre() %> | Administración UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -70,15 +70,29 @@
     </nav>
 </header>
 
+<aside id="mobileSidebar" class="mobile-sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menú</span>
+        <button type="button" id="closeSidebar" class="close-sidebar-btn" aria-label="Cerrar menú">✕</button>
+    </div>
+    
+    <ul class="sidebar-nav">
+        <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
+        <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
+        <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
+        <li><a class="active" href="${pageContext.request.contextPath}/dashboard.jsp">🔐 Administración</a></li>
+    </ul>
+</aside>
+
 <main class="page-shell">
     <div style="max-width: 760px; margin: 0 auto;">
         <div style="margin-bottom: 24px;">
-            <a href="${pageContext.request.contextPath}/dashboard.jsp" style="color: var(--blue); font-size: 13px; font-weight: 700; text-decoration: none;">← Volver al Panel de Administración</a>
-            <h1 style="font-size: 26px; font-weight: 800; margin-top: 10px;">Editar Trabajo Académico</h1>
+            <a href="${pageContext.request.contextPath}/dashboard.jsp" style="color: #00f7ff; font-size: 13px; font-weight: 700; text-decoration: none;">← Volver al Panel de Administración</a>
+            <h1 style="font-size: 26px; font-weight: 800; margin-top: 10px; color: #ffffff;">Editar Trabajo Académico</h1>
             <p style="color: var(--muted); font-size: 14px;">Modifica el nombre, descripción, semana asignada o reemplaza el archivo.</p>
         </div>
 
-        <article class="content-panel" style="padding: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-small);">
+        <article class="content-panel" style="padding: 32px; background: rgba(20, 20, 26, 0.88); border: 1px solid rgba(0, 64, 255, 0.3); border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px rgba(0, 64, 255, 0.2); backdrop-filter: blur(14px);">
             <form action="${pageContext.request.contextPath}/editar-archivo" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<%= archivo.getId() %>">
 
@@ -119,7 +133,7 @@
                 <div style="background: var(--surface-soft); border: 1px solid var(--line); padding: 16px; border-radius: 10px; margin-bottom: 24px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <span style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Archivo Actual:</span>
-                        <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>" target="_blank" style="font-size: 12px; font-weight: 700; color: var(--blue); text-decoration: none;">👁️ Ver archivo actual ↗</a>
+                        <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>" target="_blank" style="font-size: 12px; font-weight: 700; color: #00f7ff; text-decoration: none;">👁️ Ver archivo actual ↗</a>
                     </div>
                     <div style="font-size: 13px; font-family: 'JetBrains Mono', monospace; color: var(--ink); word-break: break-all; margin-bottom: 12px;">
                         <%= archivo.getUrl() %>

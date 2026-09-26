@@ -18,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= archivo.getNombre() %> | Detalle de Recurso</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -66,7 +66,7 @@
         <li><a href="${pageContext.request.contextPath}/index.jsp">🏠 Inicio</a></li>
         <li><a href="${pageContext.request.contextPath}/unidades.jsp">📚 Unidades</a></li>
         <li><a href="${pageContext.request.contextPath}/acerca.jsp">👤 Acerca de mí</a></li>
-        <li><a href="${pageContext.request.contextPath}/dashboard.jsp">🔐 Administración</a></li>
+        <li><a href="${pageContext.request.contextPath}/login.jsp">🔐 Administración</a></li>
     </ul>
 </aside>
 
@@ -79,7 +79,7 @@
     <div style="max-width: 800px; margin: 0 auto;">
         <article class="content-panel" style="padding: 32px;">
             <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
-                <span style="background: rgba(49, 94, 251, 0.15); color: var(--blue); padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 800;">
+                <span style="background: rgba(0, 64, 255, 0.2); color: #00f7ff; border: 1px solid rgba(0, 64, 255, 0.4); padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 800;">
                     <%= archivo.getTipo().toUpperCase() %>
                 </span>
                 <span style="background: var(--surface-soft); padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--ink);">
@@ -103,7 +103,7 @@
                 <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
                     <span>📥</span> Abrir / Ver Archivo
                 </a>
-                <a href="${pageContext.request.contextPath}/editar_trabajo.jsp?id=<%= archivo.getId() %>" class="btn" style="background: var(--blue-soft); color: var(--blue); border: 1px solid var(--blue); padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <a href="${pageContext.request.contextPath}/editar_trabajo.jsp?id=<%= archivo.getId() %>" class="btn" style="background: rgba(0, 64, 255, 0.18); color: #00f7ff; border: 1px solid #0040ff; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
                     ✏️ Editar Trabajo
                 </a>
                 <a href="${pageContext.request.contextPath}/descargar-archivo?id=<%= archivo.getId() %>&modo=descargar" class="btn" style="background: var(--surface-soft); color: var(--ink); border: 1px solid var(--line); padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none;">

@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unidades y Semanas | Arquitectura de Software | UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -31,13 +31,13 @@
             overflow-x: auto;
             padding-bottom: 8px;
             margin-bottom: 32px;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .unit-nav-btn {
             padding: 8px 18px;
-            border-radius: 8px;
-            background: var(--surface);
-            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--ink);
             font-size: 13px;
             font-weight: 700;
@@ -46,47 +46,56 @@
             transition: all 0.2s ease;
         }
         .unit-nav-btn:hover {
-            border-color: var(--blue);
-            color: var(--blue);
+            border-color: #0040ff;
+            background: rgba(0, 64, 255, 0.18);
+            color: #00f7ff;
+            box-shadow: 0 0 12px rgba(0, 64, 255, 0.3);
         }
         .unit-block {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 16px;
+            background: rgba(20, 20, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             padding: 28px;
             margin-bottom: 40px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             box-shadow: var(--shadow-small);
         }
         .unit-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--blue-soft);
-            color: var(--blue);
+            background: rgba(0, 64, 255, 0.18);
+            color: #00f7ff;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
+            border: 1px solid rgba(0, 64, 255, 0.4);
             margin-bottom: 12px;
+            box-shadow: 0 0 10px rgba(0, 64, 255, 0.2);
         }
         .unit-title-head {
             font-size: 22px;
             font-weight: 800;
             margin: 0 0 10px 0;
-            color: var(--ink);
+            color: #ffffff;
             line-height: 1.3;
         }
         .unit-capacidad-box {
-            background: var(--surface-soft);
-            border-left: 3px solid var(--blue);
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #0040ff;
             padding: 12px 16px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 10px 10px 0;
             margin-bottom: 24px;
             font-size: 13px;
             color: var(--muted);
             line-height: 1.5;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .weeks-cards-grid {
             display: grid;
@@ -104,25 +113,25 @@
             }
         }
         .week-item-card {
-            background: var(--surface-soft);
-            border: 1px solid var(--line);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
             padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
         .week-item-card:hover {
-            border-color: var(--blue);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-small);
+            border-color: #0040ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px -8px rgba(0, 64, 255, 0.4), 0 0 15px rgba(0, 64, 255, 0.2);
         }
         .week-number-tag {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             font-weight: 700;
-            color: var(--blue);
+            color: #00f7ff;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
@@ -132,20 +141,21 @@
             font-size: 10px;
             padding: 2px 7px;
             border-radius: 10px;
-            background: var(--surface);
+            background: rgba(255, 255, 255, 0.06);
             color: var(--muted);
-            border: 1px solid var(--line);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .resource-count-badge.has-files {
-            background: var(--blue-soft);
-            color: var(--blue);
-            border-color: var(--blue);
+            background: rgba(0, 64, 255, 0.2);
+            color: #00f7ff;
+            border-color: rgba(0, 64, 255, 0.4);
             font-weight: 700;
+            box-shadow: 0 0 10px rgba(0, 64, 255, 0.35);
         }
         .week-title {
             font-size: 14px;
             font-weight: 700;
-            color: var(--ink);
+            color: #ffffff;
             margin: 0 0 10px 0;
             line-height: 1.35;
         }

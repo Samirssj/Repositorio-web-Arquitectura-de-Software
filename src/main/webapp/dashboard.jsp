@@ -32,7 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración | Academia</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <script>
         (function () {
             const savedTheme = localStorage.getItem("academia-theme") || "dark";
@@ -169,7 +169,7 @@
                                 <span style="font-weight: 700; font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 6px;">
                                     <span>🖼️</span> 1. Imagen / Infografía
                                 </span>
-                                <span style="font-size: 10px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PNG, JPG, WebP</span>
+                                <span style="font-size: 10px; background: rgba(0, 64, 255, 0.18); color: #00f7ff; padding: 2px 7px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(0, 64, 255, 0.35);">PNG, JPG, WebP</span>
                             </div>
 
                             <div id="dropImagenArea" onclick="document.getElementById('inputImagen').click();" style="cursor: pointer; padding: 14px 8px; border-radius: 8px; transition: all 0.2s;">
@@ -230,8 +230,8 @@
                     </details>
 
                     <!-- RESUMEN DINÁMICO EN TIEMPO REAL -->
-                    <div id="resumenUpload" style="display: none; padding: 12px 16px; background: rgba(49, 94, 251, 0.08); border: 1px solid rgba(49, 94, 251, 0.25); border-radius: 8px; margin-bottom: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                        <span id="resumenTexto" style="font-size: 13px; font-weight: 700; color: var(--blue);"></span>
+                    <div id="resumenUpload" style="display: none; padding: 12px 16px; background: rgba(0, 64, 255, 0.15); border: 1px solid rgba(0, 64, 255, 0.4); border-radius: 8px; margin-bottom: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <span id="resumenTexto" style="font-size: 13px; font-weight: 700; color: #00f7ff;"></span>
                         <span style="font-size: 12px; color: var(--muted);">Listos para guardar en Supabase</span>
                     </div>
 
@@ -283,15 +283,15 @@
                                 </td>
                                 <td style="padding: 10px;">
                                     <a href="${pageContext.request.contextPath}/semana?num=<%= arch.getSemana() %>" target="_blank" style="color: var(--ink); text-decoration: none;">
-                                        <span style="background: rgba(49, 94, 251, 0.1); color: var(--blue); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">
+                                        <span style="background: rgba(0, 64, 255, 0.18); color: #00f7ff; border: 1px solid rgba(0, 64, 255, 0.35); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">
                                             Semana <%= String.format("%02d", arch.getSemana()) %> ↗
                                         </span>
                                     </a>
                                 </td>
-                                <td style="padding: 10px;"><span style="color: var(--blue); font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
+                                <td style="padding: 10px;"><span style="color: #00f7ff; font-weight: 700;"><%= arch.getTipo().toUpperCase() %></span></td>
                                 <td style="padding: 10px; white-space: nowrap;">
                                     <!-- BOTÓN EDITAR -->
-                                    <button type="button" onclick="abrirModalEditar('<%= arch.getId() %>', '<%= nomSeguro %>', '<%= descSegura %>', '<%= arch.getSemana() %>', '<%= arch.getTipo() %>', '<%= urlSegura %>')" style="background: none; border: none; color: var(--blue); font-weight: 700; cursor: pointer; padding: 0; margin-right: 12px; font-size: 13px;" title="Editar este trabajo">
+                                    <button type="button" onclick="abrirModalEditar('<%= arch.getId() %>', '<%= nomSeguro %>', '<%= descSegura %>', '<%= arch.getSemana() %>', '<%= arch.getTipo() %>', '<%= urlSegura %>')" style="background: none; border: none; color: #00f7ff; font-weight: 700; cursor: pointer; padding: 0; margin-right: 12px; font-size: 13px;" title="Editar este trabajo">
                                         ✏️ Editar
                                     </button>
                                     <a href="${pageContext.request.contextPath}/archivos?action=ver&id=<%= arch.getId() %>" style="color: var(--ink); font-weight: 600; margin-right: 12px;">Ver</a>
@@ -364,7 +364,7 @@
             <div style="background: var(--surface-soft); border: 1px solid var(--line); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Archivo actual:</span>
-                    <a id="editCurrentFileLink" href="#" target="_blank" style="font-size: 11px; font-weight: 700; color: var(--blue); text-decoration: none;">Ver actual ↗</a>
+                    <a id="editCurrentFileLink" href="#" target="_blank" style="font-size: 11px; font-weight: 700; color: #00f7ff; text-decoration: none;">Ver actual ↗</a>
                 </div>
                 <div id="editCurrentFilePath" style="font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--ink); word-break: break-all; margin-bottom: 8px;"></div>
                 
@@ -520,8 +520,8 @@
         if (!box || !input) return;
         box.addEventListener('dragover', (e) => {
             e.preventDefault();
-            box.style.borderColor = 'var(--blue)';
-            box.style.background = 'rgba(49, 94, 251, 0.08)';
+            box.style.borderColor = '#0040ff';
+            box.style.background = 'rgba(0, 64, 255, 0.15)';
         });
         box.addEventListener('dragleave', (e) => {
             e.preventDefault();

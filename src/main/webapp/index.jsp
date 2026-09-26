@@ -17,21 +17,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arquitectura de Software | Portafolio Académico UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <style>
         /* ============================================================
-           ESTILOS ESPECÍFICOS: PRESENTACIÓN DEL CURSO (HERO & PILARES)
+           ESTILOS ESPECÍFICOS: PRESENTACIÓN DEL CURSO (ESTILO SAMIR SABIEL)
            ============================================================ */
         .course-hero {
             position: relative;
-            background: linear-gradient(135deg, #090e1a 0%, #0f172a 50%, #1e1b4b 100%);
-            border: 1px solid rgba(56, 189, 248, 0.2);
+            background: linear-gradient(135deg, #000000 0%, #030c27 45%, #081745 100%);
+            border: 1px solid rgba(0, 64, 255, 0.35);
             border-radius: 24px;
             padding: 44px;
             color: #ffffff;
-            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.5), 0 0 25px rgba(49, 94, 251, 0.15);
+            box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 64, 255, 0.25);
             margin-bottom: 40px;
             overflow: hidden;
+            backdrop-filter: blur(16px);
         }
 
         .course-hero::before {
@@ -39,10 +40,10 @@
             position: absolute;
             top: -120px;
             right: -120px;
-            width: 380px;
-            height: 380px;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 64, 255, 0.3) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -51,10 +52,10 @@
             position: absolute;
             bottom: -100px;
             left: -100px;
-            width: 320px;
-            height: 320px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(49, 94, 251, 0.25) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.18) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -89,35 +90,37 @@
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background: rgba(0, 64, 255, 0.18);
+            border: 1px solid rgba(0, 64, 255, 0.45);
             border-radius: 999px;
             font-size: 11px;
             font-weight: 800;
-            color: #38bdf8;
+            color: #00f7ff;
             letter-spacing: 0.06em;
             text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(0, 64, 255, 0.25);
         }
 
         .hero-pill-secondary {
-            background: rgba(148, 163, 184, 0.12);
-            border-color: rgba(148, 163, 184, 0.25);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
             color: #cbd5e1;
+            box-shadow: none;
         }
 
         .pulse-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
+            background: #00f7ff;
+            box-shadow: 0 0 8px #00f7ff;
             animation: pulse-dot-anim 2s infinite;
         }
 
         @keyframes pulse-dot-anim {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 247, 255, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(0, 247, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 247, 255, 0); }
         }
 
         .hero-title {
@@ -130,7 +133,7 @@
         }
 
         .hero-title-accent {
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            background: linear-gradient(90deg, #00f7ff, #0040ff, #38bdf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -138,8 +141,9 @@
         .hero-subtitle {
             font-size: 15px;
             font-weight: 700;
-            color: #93c5fd;
+            color: #00f7ff;
             margin-bottom: 14px;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
         }
 
         .hero-description {
@@ -158,35 +162,36 @@
         }
 
         .btn-glow {
-            background: linear-gradient(135deg, #315efb, #0284c7);
+            background: #0040ff;
             color: white;
-            padding: 12px 22px;
+            padding: 12px 24px;
             font-weight: 700;
             font-size: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: all 0.25s ease;
-            box-shadow: 0 6px 20px rgba(49, 94, 251, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 25px rgba(0, 64, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-glow:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(49, 94, 251, 0.6);
+            background: #1f57ff;
+            box-shadow: 0 0 35px rgba(0, 64, 255, 0.85);
             color: white;
         }
 
         .btn-outline-glass {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
             color: #f1f5f9;
-            padding: 12px 20px;
+            padding: 12px 22px;
             font-weight: 700;
             font-size: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -196,9 +201,10 @@
         }
 
         .btn-outline-glass:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: #38bdf8;
-            color: #38bdf8;
+            background: rgba(0, 64, 255, 0.18);
+            border-color: #0040ff;
+            color: #00f7ff;
+            box-shadow: 0 0 15px rgba(0, 64, 255, 0.3);
             transform: translateY(-2px);
         }
 
@@ -219,18 +225,25 @@
         }
 
         .stat-item {
-            background: rgba(15, 23, 42, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            background: rgba(14, 18, 28, 0.75);
+            border: 1px solid rgba(0, 64, 255, 0.25);
+            border-radius: 14px;
             padding: 10px 14px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            border-color: rgba(0, 64, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 64, 255, 0.25);
         }
 
         .stat-number {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
-            color: #38bdf8;
+            color: #00f7ff;
             line-height: 1.1;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.4);
         }
 
         .stat-label {
@@ -242,12 +255,12 @@
 
         /* Tarjeta Blueprint de Arquitectura (Columna Derecha) */
         .blueprint-card {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            border-radius: 18px;
-            padding: 22px;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            background: rgba(14, 18, 28, 0.88);
+            border: 1px solid rgba(0, 64, 255, 0.35);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 64, 255, 0.2);
             position: relative;
         }
 
@@ -272,7 +285,7 @@
         }
         .t-red { background: #ef4444; }
         .t-yellow { background: #f59e0b; }
-        .t-green { background: #10b981; }
+        .t-green { background: #00f7ff; }
 
         .blueprint-title {
             font-family: 'JetBrains Mono', monospace;
@@ -288,9 +301,9 @@
         }
 
         .stack-layer {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(20, 24, 36, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 10px 14px;
             transition: all 0.25s ease;
             position: relative;
@@ -307,14 +320,15 @@
         }
 
         .stack-layer-4::before { background: #a855f7; }
-        .stack-layer-3::before { background: #38bdf8; }
-        .stack-layer-2::before { background: #3b82f6; }
+        .stack-layer-3::before { background: #00f7ff; }
+        .stack-layer-2::before { background: #0040ff; }
         .stack-layer-1::before { background: #10b981; }
 
         .stack-layer:hover {
             transform: translateX(4px);
-            background: rgba(30, 41, 59, 0.95);
-            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(26, 32, 48, 0.95);
+            border-color: #0040ff;
+            box-shadow: 0 0 15px rgba(0, 64, 255, 0.3);
         }
 
         .layer-top {
@@ -336,10 +350,11 @@
         .layer-unit-tag {
             font-size: 10px;
             font-weight: 700;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #cbd5e1;
+            background: rgba(0, 64, 255, 0.2);
+            color: #00f7ff;
+            border: 1px solid rgba(0, 64, 255, 0.35);
         }
 
         .layer-techs {
@@ -364,40 +379,43 @@
         }
 
         .pillar-card {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 16px;
+            background: rgba(20, 20, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
             padding: 24px;
             box-shadow: var(--shadow-small);
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
         .pillar-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--shadow);
-            border-color: var(--blue);
+            box-shadow: 0 12px 35px -10px rgba(0, 64, 255, 0.4), 0 0 25px rgba(0, 64, 255, 0.2);
+            border-color: #0040ff;
         }
 
         .pillar-icon-box {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
-            background: var(--blue-soft);
-            color: var(--blue);
+            border-radius: 14px;
+            background: rgba(0, 64, 255, 0.18);
+            color: #00f7ff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
             margin-bottom: 16px;
-            border: 1px solid rgba(49, 94, 251, 0.15);
+            border: 1px solid rgba(0, 64, 255, 0.35);
+            box-shadow: 0 0 15px rgba(0, 64, 255, 0.25);
         }
 
         .pillar-title {
             font-size: 16px;
             font-weight: 800;
-            color: var(--ink);
+            color: #ffffff;
             margin-bottom: 8px;
             line-height: 1.3;
         }
@@ -413,22 +431,24 @@
             margin-top: 12px;
             font-size: 11px;
             font-weight: 700;
-            color: var(--blue);
+            color: #00f7ff;
         }
 
         /* FICHA RESUMEN DEL CURSO */
         .course-meta-bar {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 16px;
+            background: rgba(20, 20, 26, 0.85);
+            border: 1px solid rgba(0, 64, 255, 0.25);
+            border-radius: 18px;
             padding: 20px 28px;
             display: flex;
             justify-content: space-around;
             align-items: center;
             gap: 20px;
             margin-bottom: 44px;
-            box-shadow: var(--shadow-small);
+            box-shadow: 0 10px 30px -10px rgba(0, 64, 255, 0.25);
             flex-wrap: wrap;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
         .meta-item {
@@ -452,7 +472,7 @@
         .meta-val {
             font-size: 14px;
             font-weight: 800;
-            color: var(--ink);
+            color: #ffffff;
         }
     </style>
     <script>

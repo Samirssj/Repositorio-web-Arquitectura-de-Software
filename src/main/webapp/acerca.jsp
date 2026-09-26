@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acerca de mí | Academia - UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
     <style>
         .about-grid {
             display: grid;
@@ -22,13 +22,15 @@
         }
 
         .profile-card {
-            background: var(--surface);
-            border: 1px solid var(--line);
+            background: rgba(20, 20, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 36px;
-            box-shadow: var(--shadow-small);
+            box-shadow: 0 10px 30px -10px rgba(0, 64, 255, 0.3);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
         .profile-card::before {
@@ -38,7 +40,7 @@
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            background: linear-gradient(90deg, #0040ff, #00f7ff);
         }
 
         .profile-header-flex {
@@ -67,15 +69,15 @@
             object-fit: cover;
             object-position: center top;
             border-radius: 18px;
-            border: 3px solid var(--blue);
-            box-shadow: 0 12px 28px rgba(49, 94, 251, 0.22);
+            border: 3px solid #0040ff;
+            box-shadow: 0 12px 28px rgba(0, 64, 255, 0.35);
             display: block;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .profile-img:hover {
             transform: scale(1.03);
-            box-shadow: 0 16px 36px rgba(49, 94, 251, 0.32);
+            box-shadow: 0 16px 36px rgba(0, 64, 255, 0.5);
         }
 
         .profile-badge {
@@ -86,29 +88,31 @@
             border-radius: 999px;
             font-size: 11px;
             font-weight: 800;
-            background: var(--blue-soft);
-            color: var(--blue);
-            border: 1px solid rgba(49, 94, 251, 0.25);
+            background: rgba(0, 64, 255, 0.18);
+            color: #00f7ff;
+            border: 1px solid rgba(0, 64, 255, 0.4);
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 64, 255, 0.2);
         }
 
         .profile-name {
             font-size: 28px;
             font-weight: 800;
-            color: var(--ink);
+            color: #ffffff;
             line-height: 1.2;
             margin-bottom: 8px;
         }
 
         .profile-tagline {
-            color: var(--blue);
+            color: #00f7ff;
             font-size: 14px;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
         }
 
         @media (max-width: 640px) {
@@ -123,11 +127,11 @@
             line-height: 1.85;
             margin-top: 10px;
             margin-bottom: 28px;
-            background: var(--surface-soft);
+            background: rgba(255, 255, 255, 0.04);
             padding: 22px 24px;
             border-radius: 14px;
-            border: 1px solid var(--line);
-            border-left: 4px solid var(--blue);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #0040ff;
         }
 
         .highlights-grid {
@@ -136,12 +140,12 @@
             gap: 16px;
             margin-top: 24px;
             padding-top: 24px;
-            border-top: 1px solid var(--line);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .highlight-card {
-            background: var(--surface-soft);
-            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 14px;
             padding: 16px 18px;
             transition: all 0.2s ease;
@@ -149,7 +153,8 @@
 
         .highlight-card:hover {
             transform: translateY(-2px);
-            border-color: var(--blue);
+            border-color: #0040ff;
+            box-shadow: 0 0 15px rgba(0, 64, 255, 0.25);
         }
 
         .highlight-icon {
@@ -161,7 +166,7 @@
         .highlight-title {
             font-size: 13px;
             font-weight: 800;
-            color: var(--ink);
+            color: #ffffff;
             margin-bottom: 4px;
         }
 
@@ -172,12 +177,14 @@
         }
 
         .sidebar-card {
-            background: var(--surface);
-            border: 1px solid var(--line);
+            background: rgba(20, 20, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 18px;
             padding: 26px;
             box-shadow: var(--shadow-small);
             margin-bottom: 22px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
         .skills-pills {
@@ -192,8 +199,8 @@
             align-items: center;
             gap: 6px;
             padding: 6px 12px;
-            background: var(--surface-soft);
-            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             font-size: 12px;
             font-weight: 700;
@@ -202,9 +209,10 @@
         }
 
         .skill-pill:hover {
-            border-color: var(--blue);
-            background: var(--blue-soft);
-            color: var(--blue);
+            border-color: #0040ff;
+            background: rgba(0, 64, 255, 0.18);
+            color: #00f7ff;
+            box-shadow: 0 0 10px rgba(0, 64, 255, 0.3);
             transform: translateY(-1px);
         }
 
