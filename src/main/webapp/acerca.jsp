@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acerca de mí | Academia - UPLA</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.6">
     <script>
         (function () {
             document.documentElement.setAttribute("data-theme", "dark");
@@ -414,6 +414,6 @@
     </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/theme.js"></script>
+<script src="${pageContext.request.contextPath}/js/theme.js?v=2.0"></script>
 </body>
 </html>

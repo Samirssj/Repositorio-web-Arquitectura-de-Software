@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | Academia</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.5">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3.6">
     <style>
         .auth-page {
             min-height: 100vh;
@@ -192,6 +192,6 @@
     </div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/theme.js"></script>
+<script src="${pageContext.request.contextPath}/js/theme.js?v=2.0"></script>
 </body>
 </html>

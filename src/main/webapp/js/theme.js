@@ -34,4 +34,53 @@ document.addEventListener("DOMContentLoaded", function () {
     if (menuToggle) menuToggle.addEventListener("click", openMenu);
     if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
     if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeMenu);
+
+
+    // 3. PROTECCIÓN INTEGRAL CONTRA COPIA Y SELECCIÓN DE TEXTO
+    // Previene el evento de copiado en cualquier parte del sitio (excepto formularios)
+    document.addEventListener("copy", function (e) {
+        if (!e.target.closest("input, textarea")) {
+            e.preventDefault();
+        }
+    });
+
+    // Previene el corte de texto
+    document.addEventListener("cut", function (e) {
+        if (!e.target.closest("input, textarea")) {
+            e.preventDefault();
+        }
+    });
+
+    // Previene el inicio de selección de texto con mouse o teclado
+    document.addEventListener("selectstart", function (e) {
+        if (!e.target.closest("input, textarea")) {
+            e.preventDefault();
+        }
+    });
+
+    // Previene el menú contextual del clic derecho para evitar "Copiar" o "Inspeccionar"
+    document.addEventListener("contextmenu", function (e) {
+        if (!e.target.closest("input, textarea")) {
+            e.preventDefault();
+        }
+    });
+
+    // Previene arrastrar texto o imágenes
+    document.addEventListener("dragstart", function (e) {
+        if (!e.target.closest("input, textarea")) {
+            e.preventDefault();
+        }
+    });
+
+    // Bloquea atajos de teclado de copiado y selección (Ctrl+C, Ctrl+A, Ctrl+X, Ctrl+U, Ctrl+S)
+    document.addEventListener("keydown", function (e) {
+        if (e.target.closest("input, textarea")) return;
+
+        if (e.ctrlKey || e.metaKey) {
+            const key = (e.key || "").toLowerCase();
+            if (key === "c" || key === "a" || key === "x" || key === "u" || key === "s") {
+                e.preventDefault();
+            }
+        }
+    });
 });
